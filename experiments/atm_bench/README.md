@@ -6,9 +6,10 @@ Oracle trajectory experiments on [ATM-Bench](https://arxiv.org/abs/2603.01990): 
 
 | File | Purpose |
 |------|---------|
-| `run_oracle_b3.py` | B.3 — Full 1013 QA, 3 conditions (FS / State / Oracle Trajectory) |
-| `run_hard31.py` | Hard-31 subset, same 3 conditions |
-| `results/` | Pre-computed result JSON files |
+| `run_full1013.py` | Full 1013 QA — §6.3 / Appendix C, 3 conditions (FS / State / Oracle Trajectory) |
+| `run_hard31.py` | Hard-31 subset — Appendix C.2, same 3 conditions |
+| `results/full1013_results.json` | Pre-computed results for Full 1013 QA (§6.3 / Appendix C) |
+| `results/hard31_results.json` | Pre-computed results for Hard-31 (Appendix C.2) |
 
 ## Setup
 
@@ -54,7 +55,7 @@ ATM-Bench/atm_data/data/
 
 ```bash
 # Full 1013 QA (expect ~3 hours, ~5000 API calls)
-python experiments/atm_bench/run_oracle_b3.py
+python experiments/atm_bench/run_full1013.py
 
 # Hard 31 (expect ~15 minutes, ~186 API calls)
 python experiments/atm_bench/run_hard31.py

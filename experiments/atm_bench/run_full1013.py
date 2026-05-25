@@ -1,10 +1,9 @@
-"""ATM-Bench oracle trajectory — Phase B.3: Full 1013 QA.
+"""ATM-Bench oracle trajectory — Full 1013 QA (§6.3 / Appendix C).
 
-Extends B.2 (full detail, first 50) to all 1013 QA.
-Three conditions:
-   1. FS (embedding chunks, baseline)
-   2. State (key-value pairs, baseline)
-   3. Oracle Trajectory (ground-truth evidence_ids, chronologically sorted)
+Runs all 1013 QA through three conditions:
+    1. FS (embedding chunks, baseline)
+    2. State (key-value pairs, baseline)
+    3. Oracle Trajectory (ground-truth evidence_ids, chronologically sorted)
 
 Checkpoint resume: saves progress every 50 QA; resumes from checkpoint if interrupted.
 """
@@ -27,11 +26,11 @@ DATA_DIR = _DATA_HOME
 K = 5
 _CHECKPOINT_DIR = os.path.join(os.path.dirname(__file__), "checkpoints")
 os.makedirs(_CHECKPOINT_DIR, exist_ok=True)
-CHECKPOINT_PATH = os.path.join(_CHECKPOINT_DIR, "oracle_b3_checkpoint.json")
+CHECKPOINT_PATH = os.path.join(_CHECKPOINT_DIR, "full1013_checkpoint.json")
 
 _RESULTS_DIR = os.path.join(os.path.dirname(__file__), "results")
 os.makedirs(_RESULTS_DIR, exist_ok=True)
-RESULT_PATH = os.path.join(_RESULTS_DIR, "atm_oracle_trajectory_b3_results_full1013.json")
+RESULT_PATH = os.path.join(_RESULTS_DIR, "full1013_results.json")
 
 def eid(p):
     return os.path.splitext(os.path.basename(p))[0]
@@ -226,8 +225,8 @@ def main():
 
     results = {
         "metadata": {
-            "experiment_phase": "B.3 - oracle trajectory full 1013 QA (full detail/caption)",
-            "script": "atm_oracle_trajectory_b3_full.py",
+            "experiment_phase": "Full 1013 QA (§6.3 / Appendix C)",
+            "script": "run_full1013.py",
             "timestamp": datetime.datetime.utcnow().isoformat(),
             "llm_model": MODEL,
             "llm_temperature": 0.0,
@@ -254,7 +253,7 @@ def main():
         json.dump(results, f, indent=2)
 
     print(f"\n{'='*60}")
-    print("FINAL RESULTS — B.3 Full 1013 QA")
+    print("FINAL RESULTS — Full 1013 QA (§6.3 / Appendix C)")
     print(f"{'='*60}")
     print(f"FS accuracy:              {fs_acc:.4f}")
     print(f"State accuracy:           {st_acc:.4f}")

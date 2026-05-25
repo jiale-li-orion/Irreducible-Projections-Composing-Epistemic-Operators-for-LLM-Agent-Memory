@@ -1,10 +1,9 @@
-"""ATM-Bench-Hard oracle trajectory — Phase B.3: Hard 31 QA.
+"""ATM-Bench-Hard oracle trajectory — Hard 31 QA (Appendix C.2).
 
-Extends B.3 pattern to the Hard subset (31 QA).
-Three conditions:
-   1. FS (embedding chunks, baseline)
-   2. State (key-value pairs, baseline)
-   3. Oracle Trajectory (ground-truth evidence_ids, chronologically sorted)
+Runs the Hard-31 subset through three conditions:
+    1. FS (embedding chunks, baseline)
+    2. State (key-value pairs, baseline)
+    3. Oracle Trajectory (ground-truth evidence_ids, chronologically sorted)
 
 Checkpoint resume: saves progress every 10 QA; resumes from checkpoint if interrupted.
 """
@@ -31,7 +30,7 @@ CHECKPOINT_PATH = os.path.join(_CHECKPOINT_DIR, "hard31_checkpoint.json")
 
 _RESULTS_DIR = os.path.join(os.path.dirname(__file__), "results")
 os.makedirs(_RESULTS_DIR, exist_ok=True)
-RESULT_PATH = os.path.join(_RESULTS_DIR, "atm_hard31_results.json")
+RESULT_PATH = os.path.join(_RESULTS_DIR, "hard31_results.json")
 
 
 def eid(p):
@@ -233,7 +232,7 @@ def main():
 
     results = {
         "metadata": {
-            "experiment_phase": "B.3 - oracle trajectory hard 31 QA (full detail/caption)",
+            "experiment_phase": "Hard 31 QA (Appendix C.2)",
             "script": "atm_hard31_experiment.py",
             "timestamp": datetime.datetime.utcnow().isoformat(),
             "llm_model": MODEL,
