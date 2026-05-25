@@ -1,5 +1,6 @@
-"""ATM-Bench oracle trajectory — Full 1013 QA (§6.3 / Appendix C).
+"""ATM-Bench oracle trajectory — Full 1013 QA.
 
+📄 Paper mapping: §6.3 Scaling Limits (Table 3) · Appendix C.1/C.3
 Runs all 1013 QA through three conditions:
     1. FS (embedding chunks, baseline)
     2. State (key-value pairs, baseline)

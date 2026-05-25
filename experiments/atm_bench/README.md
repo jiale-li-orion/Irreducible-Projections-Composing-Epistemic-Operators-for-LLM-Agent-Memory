@@ -2,6 +2,13 @@
 
 Oracle trajectory experiments on [ATM-Bench](https://arxiv.org/abs/2603.01990): multimodal long-term memory QA.
 
+📄 **Paper mapping:**
+
+| Experiment | Paper section |
+|-----------|--------------|
+| `run_full1013.py` | §6.3 Scaling Limits (Table 3) · Appendix C.1/C.3 |
+| `run_hard31.py` | Appendix C.2 · §6.3 (Hard-31 reference) |
+
 ## Files
 
 | File | Purpose |

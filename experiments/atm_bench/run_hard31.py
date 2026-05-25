@@ -1,5 +1,6 @@
-"""ATM-Bench-Hard oracle trajectory — Hard 31 QA (Appendix C.2).
+"""ATM-Bench-Hard oracle trajectory — Hard 31 QA.
 
+📄 Paper mapping: Appendix C.2 · §6.3 (Hard-31 reference)
 Runs the Hard-31 subset through three conditions:
     1. FS (embedding chunks, baseline)
     2. State (key-value pairs, baseline)
