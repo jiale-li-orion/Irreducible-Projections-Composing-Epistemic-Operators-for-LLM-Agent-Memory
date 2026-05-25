@@ -96,7 +96,7 @@ The central implication is not that any one operator is superior---the optimal o
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{figures/fig1_three_operators.pdf}
+\includegraphics[width=\textwidth]{../figures/fig1_three_operators.pdf}
 \caption{Irreducible epistemic projections over a shared memory trajectory. Each operator preserves different epistemic dimensions and discards others, making distinct classes of memory failures structurally unavoidable.}
 \label{fig:three_operators}
 \end{figure*}
@@ -194,7 +194,7 @@ $\mathcal{T}_T$ preserves the full epistemic trace but violates the representati
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{figures/fig2_phase_map.pdf}
+\includegraphics[width=\textwidth]{../figures/fig2_phase_map.pdf}
 \caption{Operator phase map across five epistemic regimes (DeepSeek Flash). Each cell shows accuracy; darker fill indicates stronger performance. Best operators differ per regime---no single operator dominates all axes.}
 \label{fig:phase_map}
 \end{figure*}
@@ -214,7 +214,7 @@ Any single operator induces a structurally unavoidable epistemic blind region th
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{figures/fig3_failure_dynamics.pdf}
+\includegraphics[width=\textwidth]{../figures/fig3_failure_dynamics.pdf}
 \caption{Inference-time failure dynamics under three epistemic projections. Different queries induce different context construction failures---stale belief propagation ($\mathcal{R}_T$), temporal reasoning failure ($\mathcal{S}_T$), and reasoning diffusion ($\mathcal{T}_T$).}
 \label{fig:failure_dynamics}
 \end{figure*}
@@ -282,7 +282,7 @@ The following section validates this methodology across three benchmarks and fou
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{figures/fig4_architecture_from_png.pdf}
+\includegraphics[width=\textwidth]{../figures/fig4_architecture_from_png.pdf}
 \caption{Composition methodology architecture. Queries are decomposed into epistemic axes, mapped to compatible projections via the phase map, calibrated for the target backbone model, and dispatched through type-safe routing. The front-end classifier is a replaceable component; the operator layer ($\mathcal{R}_T$, $\mathcal{S}_T$, $\mathcal{T}_T$) is stable across models.}
 \label{fig:architecture}
 \end{figure*}
@@ -366,7 +366,7 @@ Operator complementarity holds across all models---each model exhibits distinct 
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{figures/fig5_cross_model.pdf}
+\includegraphics[width=\textwidth]{../figures/fig5_cross_model.pdf}
 \caption{Cross-model evidence for model-independent complementarity and model-conditioned routing. \textbf{(a)} $\mathcal{S}_T$ fails on the same 29/112 cases across all four backbone LLMs with near-verbatim identical wrong answers. In contrast, $\mathcal{R}_T$ and $\mathcal{T}_T$ each fail on only 4/112 cases across all models. \textbf{(b)} The best single operator flips between DeepSeek-family models (favoring $\mathcal{R}_T$) and GPT/Claude-family models (favoring $\mathcal{T}_T$). On 7/8 epistemic patterns the best operator shifts across models---no universal routing table exists.}
 \label{fig:cross_model}
 \end{figure*}
