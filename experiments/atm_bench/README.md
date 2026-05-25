@@ -11,86 +11,86 @@ Oracle trajectory experiments on [ATM-Bench](https://arxiv.org/abs/2603.01990): 
 
 ---
 
-## Local Analysis Record
+## 实验记录与分析
 
-These experiments were conducted in three phases (2026-05-21 ~ 05-22). The full audit trail is documented in `reports/E12_atm_oracle_trajectory_results.md` and `for_arxiv/LOG_ATM_BENCH.md`.
+实验分四个阶段进行（2026-05-21 ~ 05-22），完整审计追踪见 `reports/E12_atm_oracle_trajectory_results.md` 和 `for_arxiv/LOG_ATM_BENCH.md`。
 
-### Experimental Progression
+### 实验演进
 
-| Phase | QA | Evidence format | Date |
-|:-----:|:--:|-----------------|:----:|
-| B.1 (pilot) | 50 | `short_summary` / `short_caption` | 05-21 |
-| B.2 (detail) | 50 | `detail[:1000]` / `caption[:1000]` | 05-21 |
-| **B.3 (full)** | **1013** | `detail[:1000]` / `caption[:1000]` | **05-22** |
+| 阶段 | QA 量 | 证据格式 | 日期 |
+|:----:|:-----:|----------|:----:|
+| B.1（先行） | 50 | `short_summary` / `short_caption` | 05-21 |
+| B.2（细节） | 50 | `detail[:1000]` / `caption[:1000]` | 05-21 |
+| **B.3（完整）** | **1013** | `detail[:1000]` / `caption[:1000]` | **05-22** |
 | Hard-31 | 31 | `detail[:1000]` / `caption[:1000]` | 05-22 |
 
-### Key Finding: Information Scaling Reversal
+### 核心发现：信息规模的反向响应
 
-Upgrading from short summaries to full detail revealed opposing responses:
+从短摘要升级到全文细节后，三种算子的表现方向截然相反：
 
-| System | Short (B.1) | Full detail (B.2) | Change |
-|--------|:-----------:|:-----------------:|:------:|
-| Retrieval | 34.0% | 24.0% | -10% (harmed) |
-| State | 24.0% | 14.0% | -10% (harmed) |
-| Trajectory | 42.0% | 52.0% | **+10%** (helped) |
+| 算子 | 短摘要 (B.1) | 全文细节 (B.2) | 变化 |
+|------|:-----------:|:--------------:|:----:|
+| 检索 R_T | 34.0% | 24.0% | -10%（受损） |
+| 状态 S_T | 24.0% | 14.0% | -10%（受损） |
+| **轨迹 T_T** | **42.0%** | **52.0%** | **+10%（获益）** |
 
-Richer evidence helps trajectory but hurts retrieval. The mechanism:
+更丰富的信息帮助了轨迹算子，却损害了检索算子。原因在于两者的信息消费机制不同：
 
-- **Retrieval** operates over similarity rankings: longer text → lower similarity per token → evidence-in-top-5 drops from 76% to 60%
-- **Trajectory** bypasses embedding ranking (uses ground-truth evidence IDs): longer text → more specific numerical and contextual details → LLM can extract exact answers
+- **检索算子**依靠相似度排序：文本越长 → 每 token 相似度越低 → 证据被挤出 top-5 窗口（命中率从 76% 降至 60%）
+- **轨迹算子**绕过嵌入排序（直接使用 ground-truth 证据 ID）：文本越长 → 包含的具体数字和上下文越丰富 → LLM 越能提取出精确答案
 
-### Trajectory Bypasses Retrieval Bottleneck
+### 轨迹算子绕过检索瓶颈
 
-When evidence was **not** in top-5 retrieval window:
+当证据不在 top-5 检索窗口内时：
 
-| Condition | Accuracy |
-|-----------|:--------:|
+| 条件 | 精度 |
+|------|:----:|
 | R_T | 0.077 |
 | S_T | 0.051 |
 | **T_T** | **0.362** |
 
-Trajectory maintains 36% accuracy on questions where retrieval cannot find the evidence — it accesses memory through chronological ordering rather than similarity ranking.
+轨迹在检索完全找不到证据的问题上仍保持 36% 的精度——因为它通过时间顺序而非相似度排名访问记忆。
 
-### Trajectory Advantage Scales with Evidence Count
+### 轨迹优势随证据数量增长
 
-| Evidence items | n | R_T | T_T | Gap |
-|:-------------:|:--:|:---:|:---:|:---:|
+| 证据数 | n | R_T | T_T | 差距 |
+|:------:|:--:|:---:|:---:|:----:|
 | 1 | 764 | 0.450 | 0.542 | +0.092 |
 | 2 | 148 | 0.236 | 0.405 | +0.169 |
 | 3 | 51 | 0.314 | 0.510 | +0.196 |
 | 4+ | 50 | 0.180 | 0.500 | **+0.320** |
 
-The gap widens monotonically with evidence count — structural advantage of temporal ordering over similarity search for multi-evidence reasoning.
+差距随证据数量单调递增——在需要多证据推理的问题上，时间排序的结构性优势远大于相似度搜索。
 
-### Condition Overlap (1013 QA)
+### 条件重叠（1013 QA）
 
-| Pattern | Count | % |
-|---------|:----:|:--:|
-| All 3 correct | 143 | 14.1% |
-| T_T unique | 165 | **16.3%** |
-| R_T unique | 34 | 3.4% |
-| S_T unique | 6 | 0.6% |
-| None correct | 429 | **42.3%** |
+| 模式 | 数量 | 占比 |
+|------|:----:|:----:|
+| 三个算子均正确 | 143 | 14.1% |
+| **仅 T_T 正确** | **165** | **16.3%** |
+| 仅 R_T 正确 | 34 | 3.4% |
+| 仅 S_T 正确 | 6 | 0.6% |
+| **全部错误** | **429** | **42.3%** |
 
-### Hard-31 Ceiling
+### Hard-31 天花板
 
-On the Hard subset (31 QA), all operators approach floor:
+在 Hard 子集（31 个困难问题）上，所有算子接近下限：
 
 | R_T | S_T | T_T |
 |:---:|:---:|:---:|
 | 0.032 | 0.065 | 0.194 |
 
-Evidence-in-top-5 rate drops to 0.548 (vs 0.616 for full 1013).
+证据 top-5 命中率从 1013 全集 0.616 降至 0.548。
 
-### Data Provenance
+### 数据来源说明
 
-All results in this directory come from the **Oracle experiment** (`run_full1013.py` / `run_hard31.py`), which uses ground-truth evidence IDs for trajectory access. The earlier SGM experiment (`atm_sgm_experiment.py`) was conducted but excluded from the paper due to methodological concerns.
+本目录所有结果来自 **Oracle 实验**（`run_full1013.py` / `run_hard31.py`），即使用 ground-truth 证据 ID 进行轨迹访问。此前还进行了 SGM 实验（`atm_sgm_experiment.py`），因方法论问题已被排除在论文之外。
 
-### Known Reproducibility Constraints
+### 可复现约束
 
-- All runs use DeepSeek Flash at temperature 0.0 — model version changes may shift absolute numbers
-- No random seed is set in the scripts (though operations are deterministic: argsort + temperature=0.0)
-- The ATM-Bench dataset (HuggingFace `Jingbiao/ATM-Bench`) is required; not included in this repo
+- 全部运行使用 DeepSeek Flash，temperature=0.0——模型版本更新可能导致绝对数值偏移
+- 脚本未设置随机种子（但运算过程确定：argsort + temperature=0.0）
+- 需自行下载 ATM-Bench 数据集（HuggingFace `Jingbiao/ATM-Bench`），不包含在本仓库内
 
 ---
 
