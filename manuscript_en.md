@@ -1,7 +1,6 @@
 # Irreducible Projections: Composing Epistemic Operators for LLM Agent Memory
 
 > Date: 2026-05-24
-> Version: v17 — Final title. Methodology states what we propose; validation separately proves what it achieves
 
 ###### Abstract
 
