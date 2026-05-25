@@ -240,9 +240,9 @@ The composed system achieves 0.718 overall against CUPMem's 0.680 on the same be
 
 | Condition | Accuracy | Number | List | Open |
 |---|---|---|---|---|
-| $\mathcal{R}_T$ | 0.399 | 0.436 | 0.122 | 0.416 |
-| $\mathcal{S}_T$ (Retrieval+KV) | 0.175 | 0.161 | 0.050 | 0.198 |
-| $\mathcal{T}_T$ (oracle trajectory) | **0.518** | 0.556 | 0.187 | 0.547 |
+| $\mathcal{R}_T$ | 0.399 | 0.469 | 0.151 | 0.416 |
+| $\mathcal{S}_T$ (Retrieval+KV) | 0.175 | 0.172 | 0.094 | 0.198 |
+| $\mathcal{T}_T$ (oracle trajectory) | **0.518** | 0.622 | 0.144 | 0.547 |
 
 $\mathcal{T}_T$ uniquely covers 16.3 percent of queries, $\mathcal{R}_T$ uniquely covers 3.4 percent, and 42.3 percent are uncovered by any operator. The uncovered fraction is not a method failure---it is empirical evidence that the epistemic space exceeds the current three-operator projection basis. This aligns with the framework's design: the composition methodology accommodates additional operator classes as they are identified (§2, §8). The trajectory operator's advantage grows with task complexity: from +0.092 on single-evidence queries (n=764) to +0.320 on queries requiring four or more evidence items (n=50), consistent with $\mathcal{T}_T$'s structural property of preserving temporal ordering.
 

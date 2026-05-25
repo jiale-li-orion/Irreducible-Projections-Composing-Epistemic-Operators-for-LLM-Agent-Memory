@@ -1,0 +1,132 @@
+<svg width="1500" height="900" viewBox="0 0 1500 900" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<style>
+.title   { font: 700 28px 'Times New Roman', serif; fill:#111; }
+.section { font: 700 25px 'Times New Roman', serif; }
+.label   { font: 18px 'Times New Roman', serif; fill:#000; }
+.small   { font: 16px 'Times New Roman', serif; fill:#111; }
+.tiny    { font: 15px 'Times New Roman', serif; fill:#222; }
+.fail    { font: 700 20px 'Times New Roman', serif; }
+
+.blue-fill   { fill:#1F4E79; } .blue-stroke  { stroke:#1F4E79; }
+.orange-fill { fill:#A64B00; } .orange-stroke{ stroke:#A64B00; }
+.green-fill  { fill:#2E6B3E; } .green-stroke { stroke:#2E6B3E; }
+.red-fill    { fill:#B22222; }
+
+.panel    { fill:#FDFDFD; stroke-width:2.5; rx:14; }
+.query    { fill:white; stroke:#555; stroke-width:1.8; rx:8; }
+.stage    { fill:#F7F7F7; stroke:#888; stroke-width:1.5; rx:10; }
+.fail-box { rx:10; stroke-width:2.5; }
+.soft-bar { fill:#FAFAFA; stroke:#999; stroke-width:1.5; rx:10; }
+
+.arrow { stroke:#444; stroke-width:2; fill:none; }
+.dashed { stroke-dasharray:7 5; }
+marker#arr polygon { fill:#444; }
+</style>
+<marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+  <polygon points="0 0, 10 3.5, 0 7"/>
+</marker>
+</defs>
+
+<!-- ═══ TITLE ═══ -->
+<text x="60" y="48" class="title">Figure 3 — Inference-Time Failure Dynamics under Epistemic Projection</text>
+
+<!-- ═══ TOP BAR ═══ -->
+<rect x="50" y="75" width="1400" height="55" class="soft-bar"/>
+<text x="750" y="108" text-anchor="middle" class="section">Different projections induce different reasoning-state failures during context construction.</text>
+
+<!-- ═══ R_T PANEL ═══ -->
+<rect x="50" y="165" width="440" height="580" class="panel blue-stroke"/>
+<text x="270" y="200" text-anchor="middle" class="section blue-fill">Retrieval Projection  ℛₜ</text>
+
+<rect x="100" y="225" width="340" height="52" class="query"/>
+<text x="270" y="256" text-anchor="middle" class="label">Where is Alice currently?</text>
+
+<line x1="270" y1="277" x2="270" y2="310" class="arrow" marker-end="url(#arr)"/>
+
+<rect x="75" y="320" width="390" height="130" class="stage"/>
+<text x="270" y="348" text-anchor="middle" class="label blue-fill">Top-K Semantic Retrieval</text>
+<rect x="105" y="370" width="130" height="40" class="query"/>
+<text x="170" y="395" text-anchor="middle" class="small">Alice → Seattle</text>
+<rect x="305" y="370" width="130" height="40" class="query"/>
+<text x="370" y="395" text-anchor="middle" class="small">Alice → Boston</text>
+<rect x="180" y="420" width="180" height="40" class="query dashed" opacity="0.35"/>
+<text x="270" y="445" text-anchor="middle" class="tiny">Correction excluded</text>
+
+<line x1="270" y1="450" x2="270" y2="485" class="arrow" marker-end="url(#arr)"/>
+
+<rect x="100" y="495" width="340" height="52" class="query"/>
+<text x="270" y="516" text-anchor="middle" class="small">Intermediate LM Belief</text>
+<text x="270" y="536" text-anchor="middle" class="label">"Boston likely current"</text>
+
+<line x1="270" y1="547" x2="270" y2="585" class="arrow" marker-end="url(#arr)"/>
+
+<rect x="80" y="595" width="380" height="50" class="fail-box" fill="#E6EEF5" stroke="#1F4E79"/>
+<text x="270" y="626" text-anchor="middle" class="fail blue-fill">Stale Belief Propagation</text>
+
+<!-- ═══ S_T PANEL ═══ -->
+<rect x="530" y="165" width="440" height="580" class="panel orange-stroke"/>
+<text x="750" y="200" text-anchor="middle" class="section orange-fill">State Projection  𝒮ₜ</text>
+
+<rect x="580" y="225" width="340" height="52" class="query"/>
+<text x="750" y="256" text-anchor="middle" class="label">How did Alice move over time?</text>
+
+<line x1="750" y1="277" x2="750" y2="310" class="arrow" marker-end="url(#arr)"/>
+
+<rect x="555" y="320" width="390" height="130" class="stage"/>
+<text x="750" y="348" text-anchor="middle" class="label orange-fill">Compressed Belief State</text>
+<rect x="635" y="370" width="230" height="45" class="query"/>
+<text x="750" y="400" text-anchor="middle" class="label">Alice.location = Chicago</text>
+<text x="750" y="438" text-anchor="middle" class="small red-fill">historical transitions unavailable</text>
+
+<line x1="750" y1="450" x2="750" y2="485" class="arrow" marker-end="url(#arr)"/>
+
+<rect x="580" y="495" width="340" height="52" class="query"/>
+<text x="750" y="516" text-anchor="middle" class="small">Intermediate LM State</text>
+<text x="750" y="536" text-anchor="middle" class="label">"No trajectory available"</text>
+
+<line x1="750" y1="547" x2="750" y2="585" class="arrow" marker-end="url(#arr)"/>
+
+<rect x="560" y="595" width="380" height="50" class="fail-box" fill="#FDF0E0" stroke="#A64B00"/>
+<text x="750" y="626" text-anchor="middle" class="fail orange-fill">Temporal Reasoning Failure</text>
+
+<!-- ═══ T_T PANEL ═══ -->
+<rect x="1010" y="165" width="440" height="580" class="panel green-stroke"/>
+<text x="1230" y="200" text-anchor="middle" class="section green-fill">Trajectory Projection  𝒯ₜ</text>
+
+<rect x="1060" y="225" width="340" height="52" class="query"/>
+<text x="1230" y="256" text-anchor="middle" class="label">What conflicting evidence exists?</text>
+
+<line x1="1230" y1="277" x2="1230" y2="310" class="arrow" marker-end="url(#arr)"/>
+
+<rect x="1035" y="320" width="390" height="130" class="stage"/>
+<text x="1230" y="348" text-anchor="middle" class="label green-fill">Full Trajectory Traversal</text>
+
+<!-- Branching graph -->
+<circle cx="1140" cy="390" r="14" fill="white" stroke="#2E6B3E" stroke-width="2"/>
+<circle cx="1230" cy="370" r="14" fill="white" stroke="#2E6B3E" stroke-width="2"/>
+<circle cx="1320" cy="390" r="14" fill="white" stroke="#2E6B3E" stroke-width="2"/>
+<circle cx="1185" cy="425" r="14" fill="white" stroke="#2E6B3E" stroke-width="2"/>
+<circle cx="1275" cy="425" r="14" fill="white" stroke="#2E6B3E" stroke-width="2"/>
+<line x1="1154" y1="390" x2="1216" y2="370" stroke="#2E6B3E" stroke-width="2"/>
+<line x1="1244" y1="370" x2="1306" y2="390" stroke="#2E6B3E" stroke-width="2"/>
+<line x1="1148" y1="398" x2="1177" y2="417" stroke="#2E6B3E" stroke-width="2"/>
+<line x1="1312" y1="398" x2="1283" y2="417" stroke="#2E6B3E" stroke-width="2"/>
+<line x1="1199" y1="425" x2="1261" y2="425" stroke="#2E6B3E" stroke-width="2"/>
+
+<line x1="1230" y1="450" x2="1230" y2="485" class="arrow" marker-end="url(#arr)"/>
+
+<rect x="1060" y="495" width="340" height="52" class="query"/>
+<text x="1230" y="516" text-anchor="middle" class="small">Intermediate LM State</text>
+<text x="1230" y="536" text-anchor="middle" class="label">"Multiple ambiguous paths"</text>
+
+<line x1="1230" y1="547" x2="1230" y2="585" class="arrow" marker-end="url(#arr)"/>
+
+<rect x="1040" y="595" width="380" height="50" class="fail-box" fill="#E5F5EE" stroke="#2E6B3E"/>
+<text x="1230" y="626" text-anchor="middle" class="fail green-fill">Reasoning Diffusion</text>
+
+<!-- ═══ BOTTOM ═══ -->
+<rect x="150" y="790" width="1200" height="55" class="soft-bar"/>
+<text x="750" y="823" text-anchor="middle" class="section">Inference failures emerge from incompatible context construction dynamics.</text>
+
+</svg>

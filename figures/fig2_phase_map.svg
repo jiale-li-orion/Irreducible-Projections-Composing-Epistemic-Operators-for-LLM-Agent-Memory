@@ -1,0 +1,179 @@
+<svg width="1500" height="850" viewBox="0 0 1500 850" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<style>
+.title   { font: 700 28px 'Times New Roman', serif; fill:#111; }
+.section { font: 700 25px 'Times New Roman', serif; }
+.label   { font: 19px 'Times New Roman', serif; fill:#000; }
+.small   { font: 16px 'Times New Roman', serif; fill:#111; }
+.tiny    { font: 15px 'Times New Roman', serif; fill:#222; }
+.col-hdr  { font: 700 19px 'Times New Roman', serif; }
+.bold    { font: 700 19px 'Times New Roman', serif; fill:#000; }
+
+.blue-fill   { fill:#1F4E79; } .blue-stroke  { stroke:#1F4E79; }
+.orange-fill { fill:#A64B00; } .orange-stroke{ stroke:#A64B00; }
+.green-fill  { fill:#2E6B3E; } .green-stroke { stroke:#2E6B3E; }
+
+.cell      { stroke:#555; stroke-width:1; }
+.grid-bold { stroke:#444; stroke-width:2; }
+.note-box  { fill:#FAFAFA; stroke:#555; stroke-width:1.5; rx:12; }
+
+.best-cell   { stroke:#222; stroke-width:3; }
+.worst-cell  { fill:#EAEAEA; }
+.mid-cell    { fill:#E2E2E2; }
+</style>
+</defs>
+
+<!-- ═══ TITLE ═══ -->
+<text x="60" y="48" class="title">Figure 2 — Operator Phase Map Across Epistemic Regimes</text>
+
+<!-- ═══ COLUMN HEADERS ═══ -->
+<!-- Temporal -->
+<rect x="240" y="100" width="210" height="55" rx="6" fill="#F8F8F8" stroke="#666"/>
+<text x="345" y="124" text-anchor="middle" class="col-hdr">Temporal Access</text>
+<text x="345" y="144" text-anchor="middle" class="small">ordered reasoning</text>
+
+<!-- Conflict -->
+<rect x="450" y="100" width="210" height="55" rx="6" fill="#F8F8F8" stroke="#666"/>
+<text x="555" y="124" text-anchor="middle" class="col-hdr">Conflict Resolution</text>
+<text x="555" y="144" text-anchor="middle" class="small">contradiction handling</text>
+
+<!-- Entity -->
+<rect x="660" y="100" width="210" height="55" rx="6" fill="#F8F8F8" stroke="#666"/>
+<text x="765" y="124" text-anchor="middle" class="col-hdr">Entity Composition</text>
+<text x="765" y="144" text-anchor="middle" class="small">cross-entity binding</text>
+
+<!-- Uncertainty -->
+<rect x="870" y="100" width="210" height="55" rx="6" fill="#F8F8F8" stroke="#666"/>
+<text x="975" y="124" text-anchor="middle" class="col-hdr">Epistemic Uncertainty</text>
+<text x="975" y="144" text-anchor="middle" class="small">belief abstraction</text>
+
+<!-- Counterfactual -->
+<rect x="1080" y="100" width="210" height="55" rx="6" fill="#F8F8F8" stroke="#666"/>
+<text x="1185" y="124" text-anchor="middle" class="col-hdr">Counterfactual</text>
+<text x="1185" y="144" text-anchor="middle" class="small">alternative histories</text>
+
+<!-- ═══ ROW LABELS ═══ -->
+<rect x="80" y="180" width="140" height="170" rx="6" fill="#E8EEF5"/>
+<text x="150" y="255" text-anchor="middle" class="section blue-fill">ℛₜ  Retrieval</text>
+<text x="150" y="278" text-anchor="middle" class="small blue-fill">top-K over pool</text>
+
+<rect x="80" y="365" width="140" height="170" rx="6" fill="#FDF0E0"/>
+<text x="150" y="440" text-anchor="middle" class="section orange-fill">𝒮ₜ  State</text>
+<text x="150" y="463" text-anchor="middle" class="small orange-fill">belief compression</text>
+
+<rect x="80" y="550" width="140" height="170" rx="6" fill="#E5F5EE"/>
+<text x="150" y="625" text-anchor="middle" class="section green-fill">𝒯ₜ  Trajectory</text>
+<text x="150" y="648" text-anchor="middle" class="small green-fill">chronological walk</text>
+
+<!-- ═══ GRID ═══ -->
+<line x1="240" y1="180" x2="1290" y2="180" class="grid-bold"/>
+<line x1="240" y1="365" x2="1290" y2="365" stroke="#666" stroke-width="1"/>
+<line x1="240" y1="550" x2="1290" y2="550" stroke="#666" stroke-width="1"/>
+<line x1="240" y1="720" x2="1290" y2="720" class="grid-bold"/>
+
+<line x1="240" y1="180" x2="240" y2="720" class="grid-bold"/>
+<line x1="450" y1="180" x2="450" y2="720" stroke="#666" stroke-width="1"/>
+<line x1="660" y1="180" x2="660" y2="720" stroke="#666" stroke-width="1"/>
+<line x1="870" y1="180" x2="870" y2="720" stroke="#666" stroke-width="1"/>
+<line x1="1080" y1="180" x2="1080" y2="720" stroke="#666" stroke-width="1"/>
+<line x1="1290" y1="180" x2="1290" y2="720" class="grid-bold"/>
+
+<!-- ═══ R_T ROW ═══ -->
+<!-- Temporal: 0.617 — mid -->
+<rect x="260" y="205" width="170" height="130" rx="4" class="mid-cell cell"/>
+<text x="345" y="260" text-anchor="middle" class="label">0.617</text>
+<text x="345" y="285" text-anchor="middle" class="small">order lost</text>
+
+<!-- Conflict: 0.817 — best -->
+<rect x="470" y="205" width="170" height="130" rx="4" class="cell" fill="#C5D5E8"/>
+<text x="555" y="260" text-anchor="middle" class="label">0.817</text>
+<text x="555" y="285" text-anchor="middle" class="tiny">evidence retrieval</text>
+
+<!-- Entity: 0.533 — worst -->
+<rect x="680" y="205" width="170" height="130" rx="4" class="worst-cell cell"/>
+<text x="765" y="260" text-anchor="middle" class="label">0.533</text>
+<text x="765" y="285" text-anchor="middle" class="tiny">no relational binding</text>
+
+<!-- Uncertainty: 0.550 — mid -->
+<rect x="890" y="205" width="170" height="130" rx="4" class="mid-cell cell"/>
+<text x="975" y="260" text-anchor="middle" class="label">0.550</text>
+
+<!-- Counterfactual: 0.900 — good -->
+<rect x="1100" y="205" width="170" height="130" rx="4" class="cell" fill="#CDD8E8"/>
+<text x="1185" y="260" text-anchor="middle" class="label">0.900</text>
+<text x="1185" y="285" text-anchor="middle" class="tiny">raw content preserved</text>
+
+<!-- ═══ S_T ROW ═══ -->
+<!-- Temporal: 0.433 — worst -->
+<rect x="260" y="390" width="170" height="130" rx="4" class="worst-cell cell"/>
+<text x="345" y="440" text-anchor="middle" class="label">0.433</text>
+<text x="345" y="465" text-anchor="middle" class="tiny">history discarded</text>
+
+<!-- Conflict: 0.950 — best -->
+<rect x="470" y="390" width="170" height="130" rx="4" class="cell" fill="#F5D5B0"/>
+<text x="555" y="440" text-anchor="middle" class="label">0.950</text>
+<text x="555" y="465" text-anchor="middle" class="tiny">write-time resolution</text>
+
+<!-- Entity: 0.700 — best in column -->
+<rect x="680" y="390" width="170" height="130" rx="4" class="best-cell cell" fill="#F5D5B0"/>
+<text x="765" y="440" text-anchor="middle" class="bold">0.700</text>
+<text x="765" y="465" text-anchor="middle" class="tiny">relational binding</text>
+
+<!-- Uncertainty: 1.000 — best, full -->
+<rect x="890" y="390" width="170" height="130" rx="4" class="best-cell" fill="#F58518"/>
+<text x="975" y="440" text-anchor="middle" class="section" fill="white">1.000</text>
+<text x="975" y="465" text-anchor="middle" class="tiny" fill="white">belief abstraction</text>
+
+<!-- Counterfactual: 0.817 — mid -->
+<rect x="1100" y="390" width="170" height="130" rx="4" class="mid-cell cell"/>
+<text x="1185" y="440" text-anchor="middle" class="label">0.817</text>
+
+<!-- ═══ T_T ROW ═══ -->
+<!-- Temporal: 0.700 — best in column -->
+<rect x="260" y="575" width="170" height="130" rx="4" class="best-cell" fill="#2E6B3E"/>
+<text x="345" y="625" text-anchor="middle" class="section" fill="white">0.700</text>
+<text x="345" y="650" text-anchor="middle" class="tiny" fill="white">ordered access</text>
+
+<!-- Conflict: 0.967 — best -->
+<rect x="470" y="575" width="170" height="130" rx="4" class="cell" fill="#C0E0C0"/>
+<text x="555" y="625" text-anchor="middle" class="label">0.967</text>
+<text x="555" y="650" text-anchor="middle" class="tiny">temporal support</text>
+
+<!-- Entity: 0.650 — mid -->
+<rect x="680" y="575" width="170" height="130" rx="4" class="cell" fill="#CCE8CC"/>
+<text x="765" y="625" text-anchor="middle" class="label">0.650</text>
+
+<!-- Uncertainty: 0.550 — mid -->
+<rect x="890" y="575" width="170" height="130" rx="4" class="mid-cell cell"/>
+<text x="975" y="625" text-anchor="middle" class="label">0.550</text>
+
+<!-- Counterfactual: 1.000 — best, full -->
+<rect x="1100" y="575" width="170" height="130" rx="4" class="best-cell" fill="#2E6B3E"/>
+<text x="1185" y="625" text-anchor="middle" class="section" fill="white">1.000</text>
+<text x="1185" y="650" text-anchor="middle" class="tiny" fill="white">temporal record</text>
+
+<!-- ═══ LEGEND ═══ -->
+<rect x="1320" y="200" width="150" height="260" rx="10" class="note-box"/>
+<text x="1395" y="230" text-anchor="middle" class="section">Legend</text>
+
+<rect x="1340" y="252" width="24" height="24" rx="3" fill="#1F4E79"/>
+<text x="1375" y="272" class="small">ℛₜ strong</text>
+
+<rect x="1340" y="295" width="24" height="24" rx="3" fill="#A64B00"/>
+<text x="1375" y="315" class="small">𝒮ₜ strong</text>
+
+<rect x="1340" y="338" width="24" height="24" rx="3" fill="#2E6B3E"/>
+<text x="1375" y="358" class="small">𝒯ₜ strong</text>
+
+<rect x="1340" y="381" width="24" height="24" rx="3" fill="#F5F5F5" stroke="#666"/>
+<text x="1375" y="401" class="small">weak / failure</text>
+
+<rect x="1340" y="424" width="24" height="24" rx="3" fill="#F0F0F0"/>
+<text x="1375" y="444" class="small">moderate</text>
+
+<!-- ═══ MAIN CLAIM ═══ -->
+<rect x="240" y="760" width="1050" height="65" rx="12" class="note-box"/>
+<text x="765" y="790" text-anchor="middle" class="section">Different epistemic regimes require incompatible projections.</text>
+<text x="765" y="813" text-anchor="middle" class="label" fill="#6B3FA0">No universal operator exists — composition is structurally necessary.</text>
+
+</svg>
