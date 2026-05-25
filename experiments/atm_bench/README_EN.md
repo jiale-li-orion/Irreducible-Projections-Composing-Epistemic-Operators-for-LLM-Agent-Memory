@@ -41,7 +41,7 @@ Three conditions sharing the same LLM, same evidence pool, same judge:
 
 Full 1013 QA experiment with checkpoint resume.
 
-**Data loading:**
+**Data loading (files below are from the ATM-Bench dataset, not in this repository):**
 - `load_all()` loads memory from three JSON files:
   - `emails.json` (~4.9MB, 6742 emails, `detail[:1000]`)
   - `image_batch_results.json` (~26.9MB, 3759 images, `caption[:1000]`)
@@ -62,7 +62,7 @@ Full 1013 QA experiment with checkpoint resume.
 
 ### run_hard31.py
 
-Same structure as run_full1013.py, QA sourced from `atm-bench-hard.json` (31 hard questions), checkpoint every 10 QA.
+Same structure as run_full1013.py, QA sourced from the ATM-Bench dataset's `atm-bench-hard.json` (31 hard questions), checkpoint every 10 QA.
 
 ---
 

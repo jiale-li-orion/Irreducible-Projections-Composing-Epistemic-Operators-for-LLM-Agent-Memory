@@ -41,8 +41,8 @@
 
 全量 1013 QA 实验，支持断点续跑。
 
-**数据加载：**
-- `load_all()` 从三个 JSON 文件加载记忆：
+**数据加载（以下文件来自 ATM-Bench 数据集，非本仓库文件）：**
+- `load_all()` 加载三类记忆：
   - `emails.json`（~4.9MB，6742 条 email，取 `detail[:1000]`）
   - `image_batch_results.json`（~26.9MB，3759 张图片，取 `caption[:1000]`）
   - `video_batch_results.json`（~1.7MB，533 个视频，取 `caption[:1000]`）
@@ -62,7 +62,7 @@
 
 ### run_hard31.py
 
-结构与 run_full1013.py 相同，但 QA 来自 `atm-bench-hard.json`（31 个困难问题），checkpoint 每 10 QA 保存一次。
+结构与 run_full1013.py 相同，但 QA 来自 ATM-Bench 数据集的 `atm-bench-hard.json`（31 个困难问题），checkpoint 每 10 QA 保存一次。
 
 ---
 
