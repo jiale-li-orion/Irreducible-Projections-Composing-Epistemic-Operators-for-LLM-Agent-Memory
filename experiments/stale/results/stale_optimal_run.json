@@ -1,0 +1,63 @@
+{
+  "configuration": "Optimal Phase-Routed: T1→S_T(dim1/dim2), T_T(dim3); T2→T_T(all)",
+  "total_scenarios": 400,
+  "results": {
+    "SR": {
+      "correct": 198,
+      "total": 400,
+      "accuracy": 0.495
+    },
+    "PR": {
+      "correct": 376,
+      "total": 400,
+      "accuracy": 0.94
+    },
+    "IPA": {
+      "correct": 288,
+      "total": 400,
+      "accuracy": 0.72
+    },
+    "Overall": 0.7183333333333334
+  },
+  "breakdown": {
+    "T1": {
+      "SR": {
+        "correct": 108,
+        "total": 200,
+        "accuracy": 0.54
+      },
+      "PR": {
+        "correct": 200,
+        "total": 200,
+        "accuracy": 1.0
+      },
+      "IPA": {
+        "correct": 116,
+        "total": 200,
+        "accuracy": 0.58
+      }
+    },
+    "T2": {
+      "SR": {
+        "correct": 90,
+        "total": 200,
+        "accuracy": 0.45
+      },
+      "PR": {
+        "correct": 176,
+        "total": 200,
+        "accuracy": 0.88
+      },
+      "IPA": {
+        "correct": 172,
+        "total": 200,
+        "accuracy": 0.86
+      }
+    }
+  },
+  "api_usage": {
+    "calls": 1400,
+    "total_tokens": 2951538
+  },
+  "elapsed_seconds": 1338.24507021904
+}

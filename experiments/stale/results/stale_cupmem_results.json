@@ -1,0 +1,1150 @@
+{
+  "S_T": {
+    "summary": {
+      "T1": {
+        "dim1": {
+          "correct": 20,
+          "total": 20
+        },
+        "dim2": {
+          "correct": 20,
+          "total": 20
+        },
+        "dim3": {
+          "correct": 18,
+          "total": 20
+        }
+      },
+      "T2": {
+        "dim1": {
+          "correct": 0,
+          "total": 0
+        },
+        "dim2": {
+          "correct": 0,
+          "total": 0
+        },
+        "dim3": {
+          "correct": 0,
+          "total": 0
+        }
+      }
+    },
+    "scenario_results": [
+      {
+        "index": 0,
+        "uid": "7c0ae4e7-6b5a-42a2-891b-0ccf553bfe7f",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user no longer lives in Seattle; they have moved to Austin.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "Based on your recent move to Austin, I can help with local recommendations, but I don't have enough information to answer about specific spots to relax."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 1,
+        "uid": "34566789-711a-4361-856e-2f758a4f685e",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user no longer lives in Seattle; their current home base is Portland.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 2,
+        "uid": "85b27125-1627-4f27-8a84-3bd07be5189c",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user no longer resides in Chicago; they have moved to London.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 3,
+        "uid": "b0d43dd4-98e2-4617-a062-24edcc22a0ee",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "I don't have enough information to answer.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 4,
+        "uid": "35385383-7d6b-415d-9d03-4efec88263da",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user is no longer on an intercity train; the most recent information indicates they are at a yoga class.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 5,
+        "uid": "cafa590e-d787-4df6-9207-eb9c9e2e90c5",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user now walks downstairs to their desk since moving into the apartment above their office.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 6,
+        "uid": "1a85388f-50de-4195-b4a5-6e2b8f383023",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user now primarily works from their apartment on weekdays.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "Based on your recent preference, I suggest drafting an email proposing your apartment as the meeting location since you are almost always there on weekdays."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 7,
+        "uid": "6ff5a576-b0e1-4127-80b7-0d3466526bcc",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user now works from a desk at an office downtown for their daily tasks.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 8,
+        "uid": "34d402c0-5fa1-42b5-8554-e44c9c397a71",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user's current situation involves an excessive heat warning, not unusually cold weather.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 9,
+        "uid": "2eaf2b38-9b67-4763-a2f0-4011d8baa26c",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user now experiences dry indoor air with static shocks, indicating the earlier damp conditions are no longer present.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 10,
+        "uid": "7f481d58-807e-4412-b352-a56db2fcf0fb",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user's morning haze no longer persists until midday; the sky is now clear and bright at sunrise.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 11,
+        "uid": "ca76ab25-bbce-44e0-a219-c7c8b81ff41e",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user is currently in a loud, packed street-food market with loud music and chatter.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 12,
+        "uid": "3ab1d7a5-5560-4bfd-8bbd-80277deb4154",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user is now three hours ahead of their NYC clients, with their local time at 2 p.m. when clients are at 9 a.m.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "Based on your memory, if your clients suggest 9 a.m. their time, that would be 2 p.m. your time, which is a reasonable time just after lunch."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": false,
+            "dim2": false,
+            "dim3": false
+          }
+        }
+      },
+      {
+        "index": 13,
+        "uid": "ac6b1ba4-5a8f-4641-a172-fc67578725d3",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user now lives in Toronto based on the most recent information.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 14,
+        "uid": "a4cb06e0-3563-458b-8aa8-aeb9ee6cee59",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user now spends most weekdays outside.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": false
+          }
+        }
+      },
+      {
+        "index": 15,
+        "uid": "b6689bbc-d261-41e5-bd6c-cfbccc9bb5e9",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user now spends hours outside every morning walking their dog.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "No, thin-soled leather loafers would not be a good fit because your current daily routine involves hours of walking on neighborhood sidewalks every morning."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 16,
+        "uid": "3fad85a1-7990-4fc2-b347-829167cb89f7",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user now has a shorter commute of about ten minutes since moving closer to their workplace.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "Based on your recent move, your commute is now only about ten minutes, so you can plan to leave just a few minutes before the commitment to arrive on time without feeling rushed."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 17,
+        "uid": "8612e685-56b3-4a07-8ca8-0a443e489768",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user's current commute is about an hour and a half each way.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 18,
+        "uid": "28d56b63-d121-4c9f-a58b-ff278c1fa16a",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user no longer lives at 8,000 feet; they now live by the ocean.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 19,
+        "uid": "7966499b-2362-48ad-976b-eeb09595be37",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user no longer lives at sea level; they moved to a mountain town where the thin air affects them.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      }
+    ]
+  },
+  "CUPMem_like": {
+    "summary": {
+      "T1": {
+        "dim1": {
+          "correct": 20,
+          "total": 20
+        },
+        "dim2": {
+          "correct": 20,
+          "total": 20
+        },
+        "dim3": {
+          "correct": 18,
+          "total": 20
+        }
+      },
+      "T2": {
+        "dim1": {
+          "correct": 0,
+          "total": 0
+        },
+        "dim2": {
+          "correct": 0,
+          "total": 0
+        },
+        "dim3": {
+          "correct": 0,
+          "total": 0
+        }
+      }
+    },
+    "scenario_results": [
+      {
+        "index": 0,
+        "uid": "7c0ae4e7-6b5a-42a2-891b-0ccf553bfe7f",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user no longer lives in Seattle; they have moved to Austin.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "Based on your recent move to Austin, I can help with local recommendations, but I don't have specific information about weekend relaxation spots in my memory."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 1,
+        "uid": "34566789-711a-4361-856e-2f758a4f685e",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user no longer lives in Seattle; their current home base is Portland.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 2,
+        "uid": "85b27125-1627-4f27-8a84-3bd07be5189c",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user no longer resides in Chicago; they have moved to London.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 3,
+        "uid": "b0d43dd4-98e2-4617-a062-24edcc22a0ee",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "I don't have enough information to answer.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 4,
+        "uid": "35385383-7d6b-415d-9d03-4efec88263da",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "I don't have enough information to answer.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 5,
+        "uid": "cafa590e-d787-4df6-9207-eb9c9e2e90c5",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user now walks downstairs to their desk since moving into the apartment above their office.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 6,
+        "uid": "1a85388f-50de-4195-b4a5-6e2b8f383023",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user now tends to work from their apartment on weekdays.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "Based on your recent preference, I suggest drafting an email proposing your apartment as the meeting location, as you are almost always there on weekdays."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 7,
+        "uid": "6ff5a576-b0e1-4127-80b7-0d3466526bcc",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user now works from a desk at an office downtown for their daily tasks.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 8,
+        "uid": "34d402c0-5fa1-42b5-8554-e44c9c397a71",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user's current situation involves an excessive heat warning, not unusually cold weather.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 9,
+        "uid": "2eaf2b38-9b67-4763-a2f0-4011d8baa26c",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user now lives in dry season conditions where the air feels crisp and static shocks occur, not constant dampness.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 10,
+        "uid": "7f481d58-807e-4412-b352-a56db2fcf0fb",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user's morning haze no longer persists until midday; the sky is now clear and bright at sunrise.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 11,
+        "uid": "ca76ab25-bbce-44e0-a219-c7c8b81ff41e",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user is currently in a loud, packed street-food market with loud music and chatter.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 12,
+        "uid": "3ab1d7a5-5560-4bfd-8bbd-80277deb4154",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user is now three hours ahead of their NYC clients, meaning they are on Eastern Time.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "Based on your memory, if your client suggests 9 a.m. their time, that would be 2 p.m. your time, which is a reasonable time just after lunch."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": false,
+            "dim2": false,
+            "dim3": false
+          }
+        }
+      },
+      {
+        "index": 13,
+        "uid": "ac6b1ba4-5a8f-4641-a172-fc67578725d3",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user now lives in Toronto based on the most recent information.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 14,
+        "uid": "a4cb06e0-3563-458b-8aa8-aeb9ee6cee59",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user now spends most weekdays outside.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": false
+          }
+        }
+      },
+      {
+        "index": 15,
+        "uid": "b6689bbc-d261-41e5-bd6c-cfbccc9bb5e9",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user now spends hours outside every morning walking the dog.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "No, thin-soled leather loafers would not be a good fit because your current daily routine involves hours of walking on neighborhood sidewalks every morning."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 16,
+        "uid": "3fad85a1-7990-4fc2-b347-829167cb89f7",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user now has a shorter commute of about ten minutes since moving closer to their workplace.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "Based on your recent move, your commute is now only about ten minutes, so you can plan to leave just a bit earlier to arrive on time without feeling rushed."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 17,
+        "uid": "8612e685-56b3-4a07-8ca8-0a443e489768",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user's current commute is about an hour and a half each way.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 18,
+        "uid": "28d56b63-d121-4c9f-a58b-ff278c1fa16a",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user no longer lives at 8,000 feet; they now live by the ocean.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      },
+      {
+        "index": 19,
+        "uid": "7966499b-2362-48ad-976b-eeb09595be37",
+        "type": "T1",
+        "answers": {
+          "dim1_query": "No, the user no longer lives at sea level; they moved to a mountain town where the thin air affects them.",
+          "dim2_query": "I don't have enough information to answer.",
+          "dim3_query": "I don't have enough information to answer."
+        },
+        "judgments": {
+          "dim1_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim2_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          },
+          "dim3_query": {
+            "dim1": true,
+            "dim2": true,
+            "dim3": true
+          }
+        }
+      }
+    ]
+  }
+}
