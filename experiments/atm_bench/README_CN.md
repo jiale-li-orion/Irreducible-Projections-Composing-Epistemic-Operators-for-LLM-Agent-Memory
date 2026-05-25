@@ -1,4 +1,4 @@
-# ATM-Bench Experiments [🇨🇳 中文]
+# ATM-Bench Experiments [🇨🇳]
 
 [ATM-Bench](https://arxiv.org/abs/2603.01990) 多模态长期记忆 QA 的 oracle 轨迹实验。
 

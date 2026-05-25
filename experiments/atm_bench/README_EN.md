@@ -1,4 +1,4 @@
-# ATM-Bench Experiments [🇬🇧 English]
+# ATM-Bench Experiments [🇬🇧]
 
 Oracle trajectory experiments on [ATM-Bench](https://arxiv.org/abs/2603.01990): multimodal long-term memory QA.
 
