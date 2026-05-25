@@ -1,39 +1,92 @@
 # ATM-Bench Experiments
 
-Oracle trajectory experiments on [ATM-Bench](https://arxiv.org/abs/2603.01990): multimodal long-term memory QA.
+[ATM-Bench](https://arxiv.org/abs/2603.01990) 多模态长期记忆 QA 的 oracle 轨迹实验。
 
-📄 **Paper mapping:**
+📄 **论文映射：**
 
-| Experiment | Paper section |
-|-----------|--------------|
-| `run_full1013.py` | §6.3 Scaling Limits (Table 3) · Appendix C.1/C.3 |
-| `run_hard31.py` | Appendix C.2 · §6.3 (Hard-31 reference) |
+| 实验 | 论文位置 |
+|------|---------|
+| `run_full1013.py` | §6.3 Scaling Limits（Table 3）· 附录 C.1/C.3 |
+| `run_hard31.py` | 附录 C.2 · §6.3（Hard-31 引用） |
+
+---
+
+## 实验目的
+
+论文 §6.3 和附录 C 试图回答：当认知空间超出当前三算子投影基时（即在 ATM-Bench 的大规模真实数据上），三个算子的覆盖边界在哪里？T_T 的 oracle 上限有多高？哪些查询是所有算子都无法回答的？
+
+## 实验配置
+
+| 参数 | 值 |
+|------|-----|
+| 基座模型 | DeepSeek Flash（`deepseek/deepseek-v4-flash`） |
+| Temperature | 0.0 |
+| 嵌入模型 | all-MiniLM-L6-v2（sentence-transformers），384 维 |
+| Top-K | 5 |
+| 证据格式 | email 用 `detail[:1000]`，图片/视频用 `caption[:1000]` |
+| 裁判 | 同一 LLM，二元 CORRECT/INCORRECT 判定 |
+| 数据集 | HuggingFace `Jingbiao/ATM-Bench`，~4 年多模态个人记忆，1013 QA |
+
+## 实验设计
+
+三个条件对比，共享同一 LLM、同一证据集合、同一裁判：
+
+1. **R_T（Flat Search）**：top-5 embedding chunks，原始文本格式。`[Email/Photo/Video {ts}] {detail/caption[:1000]}`
+2. **S_T（State，Retrieval+KV）**：top-5 chunks 以 key-value 形式呈现。`evidence_id: text[:200]`。注意：ATM-Bench 的证据是非结构化的自由文本，无法做真正的写时状态投影，因此 S_T 在此退化为 Retrieval+KV 变体。
+3. **T_T（Oracle Trajectory）**：使用 ground-truth evidence_ids，按时间排序，step 格式。`[Step {i}: {ts}]\n  {text}`。这是 oracle 上限——绕过检索直接给正确证据。
+
+## 脚本分析
+
+### run_full1013.py
+
+全量 1013 QA 实验，支持断点续跑。
+
+**数据加载：**
+- `load_all()` 从三个 JSON 文件加载记忆：
+  - `emails.json`（~4.9MB，6742 条 email，取 `detail[:1000]`）
+  - `image_batch_results.json`（~26.9MB，3759 张图片，取 `caption[:1000]`）
+  - `video_batch_results.json`（~1.7MB，533 个视频，取 `caption[:1000]`）
+- QA 从 `atm-bench.json`（1013 条，含 qtype 字段）加载
+
+**核心流程：**
+1. 用 `SentenceTransformer` 对所有记忆 item 做 embedding（`normalize_embeddings=True`）
+2. 对所有 QA 问题做 embedding
+3. 逐条 QA：
+   - 计算 query embedding 与所有 memory embedding 的点积，取 top-5
+   - 三种条件分别调用 LLM（`answer()`）并记录答案
+   - 调用 LLM-as-judge（`judge()`）判定正确性
+   - 每 50 QA 保存一次 checkpoint
+   - 完成后清理 checkpoint 文件
+
+**输出：** `results/full1013_results.json`，含 1013 条详细记录（每条含问题、真值、三个答案、裁判结果、evidence_ids、evidence_in_top5 状态）。
+
+### run_hard31.py
+
+结构与 run_full1013.py 相同，但 QA 来自 `atm-bench-hard.json`（31 个困难问题），checkpoint 每 10 QA 保存一次。
 
 ---
 
 ## 实验记录与分析
 
-本目录的两个脚本对应论文 §6.3 和附录 C。以下数据均从 `results/` 下的 JSON 文件聚合得出。
+以下数据均从 `results/` 下的 JSON 文件直接聚合。
 
-### 三算子总体精度（full1013_results.json）
+### 三算子总体精度
 
 | 算子 | 精度 |
 |------|:----:|
-| R_T（top-5 检索） | 0.399 |
-| S_T（Retrieval+KV） | 0.175 |
-| **T_T（Oracle Trajectory）** | **0.518** |
+| R_T | 0.399 |
+| S_T | 0.175 |
+| **T_T** | **0.518** |
 | 证据 top-5 命中率 | 0.616 |
 
 ### 证据 top-5 条件精度
-
-当证据在/不在 top-5 检索窗口内时，表现差异显著：
 
 | 条件 | n | R_T | S_T | T_T |
 |------|:--:|:---:|:---:|:---:|
 | 证据在 top-5 内 | 624 | 0.599 | 0.252 | 0.615 |
 | 证据不在 top-5 内 | 389 | 0.077 | 0.051 | **0.362** |
 
-T_T 在检索完全找不到证据时仍保持 36.2% 精度——它通过时间顺序而非相似度排名访问记忆。
+T_T 在检索完全找不到证据时仍保持 36.2% 精度——通过时间顺序而非相似度排名访问记忆。
 
 ### 轨迹优势随证据数量增长
 
@@ -46,7 +99,7 @@ T_T 在检索完全找不到证据时仍保持 36.2% 精度——它通过时间
 
 差距随证据数量单调递增。
 
-### 条件重叠（1013 QA）
+### 条件重叠
 
 | 模式 | 数量 | 占比 |
 |------|:----:|:----:|
@@ -56,93 +109,48 @@ T_T 在检索完全找不到证据时仍保持 36.2% 精度——它通过时间
 | 仅 S_T 正确 | 6 | 0.6% |
 | **全部错误** | **429** | **42.3%** |
 
-### Hard-31（hard31_results.json）
+### Hard-31
 
 | 算子 | R_T | S_T | T_T |
 |:----:|:---:|:---:|:---:|
 | 精度 | 0.032 | 0.065 | 0.194 |
 | 证据 top-5 命中率 | 0.548 | | |
 
-### 数据来源说明
-
-所有结果来自 Oracle 实验（`run_full1013.py`、`run_hard31.py`），即使用 ground-truth 证据 ID 进行轨迹访问。S_T 在此基准上为 Retrieval+KV 变体（非结构化证据不支持真状态投影）。
-
-### 可复现约束
-
-- 全部运行使用 DeepSeek Flash，temperature=0.0
-- 脚本未设置随机种子（运算过程确定：argsort + temperature=0.0）
-- 需自行下载 ATM-Bench 数据集（HuggingFace `Jingbiao/ATM-Bench`），不包含在本仓库内
+所有算子接近下限，确认该子集超出了简单证据访问的能力范围。
 
 ---
 
-## Files
+## 可复现说明
 
-| File | Purpose |
-|------|---------|
-| `run_full1013.py` | Full 1013 QA — §6.3 / Appendix C, 3 conditions (FS / State / Oracle Trajectory) |
-| `run_hard31.py` | Hard-31 subset — Appendix C.2, same 3 conditions |
-| `results/full1013_results.json` | Pre-computed results for Full 1013 QA (§6.3 / Appendix C) |
-| `results/hard31_results.json` | Pre-computed results for Hard-31 (Appendix C.2) |
-
-## Setup
+### 环境
 
 ```bash
-# 1. Install dependencies
 pip install -r ../../requirements.txt
-
-# 2. Set API key (get one from https://platform.deepseek.com)
-export DEEPSEEK_API_KEY="sk-..."
+export DEEPSEEK_API_KEY="sk-..."  # https://platform.deepseek.com
 ```
 
-Requires Python 3.12+.
+Python 3.12+。
 
-## Data
-
-Download the ATM-Bench dataset from HuggingFace:
+### 数据
 
 ```bash
 git clone https://huggingface.co/datasets/Jingbiao/ATM-Bench /path/to/data/ATM-Bench
+export ATM_BENCH_DATA=/path/to/data/ATM-Bench/atm_data
 ```
 
-Then either:
+数据集不包含在本仓库内。
 
-- Set `ATM_BENCH_DATA` environment variable: `export ATM_BENCH_DATA=/path/to/data/ATM-Bench/atm_data`
-- Or place the dataset at `arxiv-submission/data/ATM-Bench/atm_data/` (default lookup path)
-
-Expected data layout:
-
-```
-ATM-Bench/atm_data/data/
-├── raw_memory/email/emails.json
-├── processed_memory/image_batch_results.json
-├── processed_memory/video_batch_results.json
-└── atm-bench/atm-bench.json          (1013 QA)
-└── atm-bench/atm-bench-hard.json     (31 QA, hard subset)
-```
-
-## Run
+### 运行
 
 ```bash
-# Full 1013 QA (expect ~3 hours, ~5000 API calls)
-python experiments/atm_bench/run_full1013.py
-
-# Hard 31 (expect ~15 minutes, ~186 API calls)
-python experiments/atm_bench/run_hard31.py
+python experiments/atm_bench/run_full1013.py   # ~3 小时，~5000 API 调用
+python experiments/atm_bench/run_hard31.py     # ~15 分钟，~186 API 调用
 ```
 
-Both scripts auto-save checkpoints every 50 (or 10) QA and resume if interrupted.
+两脚本均支持 checkpoint 断点续跑。
 
-## Results Summary
+### 约束
 
-| Experiment | R_T | S_T | T_T |
-|-----------|:---:|:---:|:---:|
-| Full 1013 | 0.399 | 0.175 | **0.518** |
-| Hard 31 | 0.032 | 0.065 | **0.194** |
-
-## Notes
-
-- All runs use DeepSeek Flash (`deepseek/deepseek-v4-flash`) at temperature 0.0
-- Judge is the same LLM with a binary CORRECT/INCORRECT prompt
-- `T_T` uses oracle trajectory access (ground-truth evidence IDs + chronological ordering)
-- `S_T` on this benchmark is a Retrieval+KV variant (unstructured evidence prevents true state projection)
-- The full detail/caption format (`detail[:1000]` / `caption[:1000]`) was used for all results above
+- 脚本未设置随机种子（运算确定：argsort + temperature=0.0）
+- 模型版本更新可能导致绝对数值偏移
+- 本目录文件名对应论文 §6.3 和附录 C。S_T 在此为 Retrieval+KV 变体，非真状态投影。T_T 使用 oracle 轨迹访问（ground-truth 证据 ID + 时间排序），代表认知上限而非可部署系统精度。
