@@ -36,22 +36,80 @@ External validation on [STALE](https://arxiv.org/abs/2605.06527): operator compo
 
 ### run_composition.py
 
-Core experiment, runs all 400 scenarios in one pass.
+Runs all 400 scenarios in one pass (**no checkpoint** — restart from scratch if interrupted).
 
-**Data loading:**
-- Loads 400 scenarios from HuggingFace `STALEproj/STALE`
-- Each scenario: M_old (old state), M_new (new state), haystack_session (dialogue history), relevant_session_index, probing_queries (dim1/2/3)
+**Data loading (lines 39-42):**
+```python
+ds = load_dataset("STALEproj/STALE", split="train", streaming=False)
+scenes = [dict(ds[i]) for i in range(len(ds))]
+```
+Loads STALE from HuggingFace (cached locally ~275MB). Each scenario contains:
+- `M_old` / `M_new`: old/new state description text
+- `haystack_session`: full dialogue history (list of sessions, each a list of messages)
+- `relevant_session_index`: which sessions are relevant to this conflict
+- `timestamps`: per-session timestamps
+- `probing_queries`: three probe dimensions (`dim1_query`, `dim2_query`, `dim3_query`)
+- `type`: `"T1"` (direct conflict) or `"T2"` (propagation conflict)
 
-**Core loop:**
-1. Build state B from M_old/M_new (key-value)
-2. Build trajectory traj (chronologically sorted relevant sessions)
-3. Route per strategy:
-   - dim1 → S_T (`to_string(B)`)
-   - dim2 → S_T + premise verifier (`check_premises(B, q)`)
-   - dim3 → T_T (`traj`)
-   - T2 → all T_T
-4. Rule-based judge: checks for keywords like "no longer", "outdated", "is now", etc.
-5. Output: per-dimension correct/total, T1/T2 breakdown
+**State construction (lines 57-66):**
+```python
+B = create_memory()
+for idx in range(len(sessions)):
+    if idx in r_idx:
+        i = r_idx.index(idx)
+        if i == 0 and sc.get("M_old"):
+            add_belief(B, "loc", str(sc["M_old"])[:200], ts, "user", 0.8)
+        elif i == len(r_idx)-1 and sc.get("M_new"):
+            revise(B, {"key":"loc","value":str(sc["M_new"])[:200], ...})
+```
+Only processes sessions in `relevant_session_index`. First relevant session → old belief (M_old, confidence=0.8). Last relevant session → new belief (M_new, confidence=0.9, triggers `revise` to overwrite old value). Other sessions are ignored.
+
+**Trajectory construction (lines 68-76):**
+```python
+for idx in sorted(r_idx):
+    traj_parts.append(f"--- Session {idx} [{ts}] ---")
+    for t in sessions[idx]:
+        traj_parts.append(f"{t.get('role','')}: {t.get('content','')}")
+```
+Chronologically sorts relevant sessions and concatenates into plain text. This is the T_T (trajectory operator) context.
+
+**Routing logic (lines 80-97):**
+```python
+for d in ["dim1","dim2","dim3"]:
+    if st == "T2" or d == "dim3":
+        ctx = traj           # T2 all T_T, dim3 also T_T
+    else:
+        ctx = to_string(B)   # T1 dim1/dim2 use S_T
+        if d == "dim2":
+            pc = check_premises(B, q)  # premise verifier
+            if not pc.get("safe", True):
+                ctx += f"\n[WARNING: outdated premise! ...]"
+```
+- **T1 dim1** (State Resolution): S_T. Serializes state B to text, asks LLM for current state.
+- **T1 dim2** (Premise Resistance): S_T + premise verifier. `check_premises` detects stale assumptions in the query; if found, injects an explicit warning into the context.
+- **T1 dim3** (Implicit Policy Adaptation): T_T. Provides full dialogue trajectory for the LLM to infer updated-state actions.
+- **T2 all dimensions**: T_T. State operator's write-time revision is ineffective for implicit propagation conflicts.
+
+**Judge (lines 32-37):**
+```python
+def judge(r):
+    rl = (r or "").lower()
+    return any(p in rl for p in [
+        "no longer","outdated","not valid","is now","now lives","moved to",
+        "has moved","does not","actually","your current","updated","incorrect",
+        "don't have enough","not enough info"])
+```
+Rule-based keyword judge (not LLM). Checks if the answer contains keywords indicating awareness of stale information:
+- "Alice no longer lives in Seattle" → contains `"no longer"` → correct ✅
+- "I don't have enough information" → contains `"don't have enough"` → correct ✅
+- "Alice lives in Seattle" (no staleness awareness) → no keywords → wrong ❌
+
+**Counting and output (lines 104-148):**
+```python
+per_dim[d]["c"] += 1 if ok else 0       # global
+breakdown[st][d]["c"] += 1 if ok else 0  # per T1/T2
+```
+Progress printed every 25 scenarios. Final accuracy computed per dimension and per type, saved to `results/stale_optimal_run.json`.
 
 ---
 
