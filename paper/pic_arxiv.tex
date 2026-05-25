@@ -494,7 +494,7 @@ Theoretical upper bound & $0.913$ & 112 & --- & Perfect routing\\
 \subsection*{B.3 Routing Strategy}
 The composed system uses a type-safe design: one intent, one operator. Each of 8 pattern types maps to exactly one operator via deterministic rules: past\_state $\rightarrow \mathcal{R}_T$, temporal\_relationship $\rightarrow \mathcal{T}_T$, multi\_path $\rightarrow \mathcal{T}_T$, negative\_evidence $\rightarrow \mathcal{T}_T$, correction\_chain $\rightarrow \mathcal{S}_T$, cross\_entity $\rightarrow \mathcal{R}_T$, implicit\_conflict $\rightarrow \mathcal{S}_T$, ambiguous $\rightarrow$ uncertainty protocol. These routing rules represent the classification decisions of the IntentDetector front-end, whose errors account for the gap between the achieved routing gain ($+0.138$) and the theoretical upper bound ($0.913$).
 
-\section*{Appendix C: ATM-Bench Analysis}
+\section*{Appendix C: ATM-Bench Additional Analysis}
 \subsection*{C.1 Projection Bottleneck}
 \begin{table}[h]
 \centering\footnotesize
@@ -672,7 +672,7 @@ ambiguous & $\mathcal{R}_T$ & $\mathcal{R}_T$ & $\mathcal{T}_T$ & $\mathcal{R}_T
 }
 \end{table}
 
-\section*{Appendix F: STALE Results}
+\section*{Appendix F: External Validation on STALE}
 \subsection*{F.1 Full 400-Scenario Results (DeepSeek Flash, rule-based judge)}
 
 \begin{table}[h]
@@ -722,7 +722,7 @@ Architecture & Single augmented S\_T & Operator composition\\% [RESTORED FROM v1
 
 Direct comparison is confounded by backbone model differences and judge methodology. The structural claim---that composition gains follow from operator complementarity, not engineering quality---is independent of this number.% [RESTORED FROM v17]
 
-\section*{Appendix G: CUPMem Analysis}
+\section*{Appendix G: STALE and CUPMem Analysis}
 
 \subsection*{G.1 Source Code Verification}% [RESTORED FROM v17]
 The STALE benchmark codebase (\texttt{github.com/icedreamc/STALE}, MIT license) was independently reviewed. No hardcoded results; all accuracy computations use real LLM calls. CUPMem verified through sample runs.% [RESTORED FROM v17]
