@@ -1,0 +1,755 @@
+% % Irreducible Projections: Composing Epistemic Operators for LLM Agent Memory
+% AAAI 2027 Submission — v17
+%
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{times,helvet,courier}
+\usepackage[hyphens]{url}\usepackage{graphicx}
+\usepackage{amsmath,amssymb}\usepackage[utf8]{inputenc}\usepackage[english]{babel}
+\usepackage{booktabs,array,tabularx,multirow,makecell}\usepackage{cite,xspace,microtype}
+\usepackage[pagebackref=true,breaklinks=true,colorlinks=true,linkcolor=blue,citecolor=blue]{hyperref}
+
+\pdfinfo{/Title (Irreducible Projections: Composing Epistemic Operators for LLM Agent Memory)}
+
+\title{Irreducible Projections:\\Composing Epistemic Operators for LLM Agent Memory}
+\author{Jiale Li\\\href{mailto:2946192893@qq.com}{2946192893@qq.com}}
+\pagestyle{empty}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+
+\begin{abstract}
+Memory-augmented LLM agents have traditionally relied on retrieval---query-conditioned selection over an artifact pool---as the dominant access mechanism. We argue that retrieval is not the only fundamental access mechanism but one of at least three structurally distinct epistemic operators: retrieval (top-K selection over an unordered pool), state lookup (query-independent readout of a compressed belief state), and trajectory walk (chronological traversal of a temporally ordered transition graph). Each operator preserves different epistemic dimensions and discards others, making distinct classes of memory failures structurally unavoidable; no single operator is complete. We propose a design methodology for memory systems based on operator composition: decompose the task space into epistemic axes, select the optimal operator per axis via an empirically measured phase map, calibrate the selection for the target backbone model, and compose operators through type-safe routing. Cross-model validation on four LLMs reveals that operator complementarity is model-independent---state lookup fails on the same 29 of 112 cases across all models with near-verbatim identical wrong answers---while optimal routing is model-conditioned. A composed system following model-calibrated routing achieves gains of $+0.038$ to $+0.138$ over the best single operator across three benchmarks (MSFT, MSFT-NL, STALE). Critically, calibrated composition empirically exhibits a non-inferiority property across all tested settings. The central implication is that memory system design should be reframed as operator composition with model-specific calibration, not as representation optimization under a single access paradigm.
+\end{abstract}
+
+% ═══════════════════════════════════════
+\section{Introduction}
+% ═══════════════════════════════════════
+
+Large Language Model (LLM) agents operating over extended time horizons depend on effective memory---the ability to access, reason over, and maintain information about the past. The dominant approach has been retrieval-augmented memory: past interactions are stored as external artifacts and selectively retrieved at query time. Recent work has advanced memory representation (APEX-MEM's temporal property graph and procedural learning \cite{banerjee2026apexmem}, GSW's generative semantic workspace \cite{rajesh2025gsw}, GAM's hierarchical graph-based consolidation \cite{wu2026gam}), adaptive retrieval (UMA's RL-based CRUD memory management \cite{zhang2026uma}), and memory evaluation (AMA-Bench's long-horizon evaluation, ReMemR1's retrieval-in-the-loop memory updates \cite{shi2025rememr1}). Yet a common assumption unites these efforts: that memory is a collection of artifacts, and intelligence emerges from retrieval-time selection and downstream reasoning.
+
+Recent evidence challenges this foundation. Across multiple long-term memory benchmarks \cite{maharana2024locomo,wu2025longmemeval,xu2025amem}, state-of-the-art memory agents offer only marginal improvements over base retrieval and frequently reuse invalid or outdated memories \cite{uddin2026memora}; STALE \cite{chao2026stale} further demonstrates that even when updated evidence is explicitly retrieved, systems often fail to treat it as authoritative, with 56.1\% of cases exhibiting residual behavioral failure despite updated evidence appearing in top-ranked retrieval results. These findings converge on a structural diagnosis: memory failure is not primarily a retrieval problem, but a failure to maintain a coherent and authoritative state over time. The deeper question---what kind of access mechanism best serves an agent's epistemic needs---remains open.
+
+This paper argues that the apparent binary choice between retrieval and state is a false dichotomy. At least three structurally distinct epistemic operators are at play: retrieval (query-conditioned selection over an unordered artifact pool), state lookup (query-independent readout of a compressed belief state), and trajectory walk (chronological traversal of a temporally ordered transition graph). Each operator preserves different epistemic dimensions and discards others. As a result, no single operator is complete---each makes distinct classes of memory failures structurally unavoidable. The design problem is therefore better understood as composition of access operators guided by the structure of the task epistemic space, with operator effectiveness further conditioned by the choice of backbone model.
+
+\textbf{Contribution 1: why single operators are not enough.} We define three epistemic operators and show, through controlled benchmarks, that each induces a distinct and irrecoverable projection failure over a shared memory trajectory. Retrieval makes contradiction structurally unobservable. State lookup eliminates this instability by collapsing memory into a single-value representation, but makes historical and relational queries structurally unaskable. Trajectory walk preserves the full temporal record, avoiding both failures, but is non-compressible for decision-time inference. No single projection preserves co-visibility, temporal access, and compressibility simultaneously. Across four backbone LLMs, state lookup exhibits near-identical failure patterns (29/112 cases with near-verbatim identical wrong answers), while retrieval and trajectory preferences shift substantially across models---operator complementarity is model-independent; optimal routing is model-conditioned.
+
+\textbf{Contribution 2: compositional memory access from incompatible projections.} We propose a composition methodology for reconstructing epistemic coverage from structurally incomplete operators. The method decomposes tasks into epistemic dimensions, maps each dimension to its projection-compatible operator through an empirically derived phase map, calibrates the mapping for the target backbone model, and composes operators through type-safe routing. Composition recovers task regions inaccessible to any single operator by preventing structurally mismatched operator-query pairings. Across all tested settings, calibrated composition never underperforms the best single operator.
+
+\textbf{Contribution 3: empirical validation at multiple scales.} A composed system following model-calibrated routing achieves consistent routing gains over the best single operator across structured (MSFT), natural-language (MSFT-NL), and external conflict benchmarks (STALE). Critically, calibrated composition empirically maintains non-inferiority across all tested model-benchmark combinations. The gains, and the non-inferiority property, persist across four backbone LLMs, confirming cross-model generalization. On the large-scale real-world ATM-Bench benchmark, operator-level analysis reveals distinct epistemic coverage regions, with $42.3\%$ of queries motivating operator classes beyond the three studied here---a direction the composition framework is designed to accommodate.
+
+% ═══════════════════════════════════════
+\section{Three Epistemic Operators}
+\label{sec:operators}
+
+The three access mechanisms differ in their mathematical structure. Retrieval is similarity matching over a continuous space; state lookup is discrete classification over a key-value space; trajectory walk is deterministic traversal over a temporally ordered graph. Each induces a distinct epistemic operator with specific structural properties.
+
+\subsection{Formal Definitions}
+We model agent memory as a temporally ordered sequence of events $T = \{e_1,\dots,e_n\}$ with $e_i \prec e_{i+1}$, where $\prec$ denotes temporal precedence. From this primitive we derive two reduced representations:
+
+\begin{itemize}
+\item \textbf{State projection.} $\mathrm{proj}_s(T) = s_n$ --- the current belief state, retaining no information about how those beliefs were reached.
+\item \textbf{Artifact pool.} $M_T = \{e_1,\dots,e_n\}$ --- the unordered set of evidence artifacts, stripped of temporal order and causal adjacency.
+\item \textbf{Transition graph.} $G_T = (V,E)$ with $V = \{e_i\}$ and $E = \{(e_i,e_{i+1})\}$ for $1 \leq i < n$, the directed graph encoding temporal adjacency between consecutive events.
+\end{itemize}
+
+\begin{table}[t]
+\caption{Three representations and their induced epistemic operators.}
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lll}
+\toprule
+Operator & Representation & Selection \\
+\midrule
+Retrieval ($\mathcal{R}_T$) & Artifact pool $M_T$ & Query-time: $\text{top-}K_\theta(M_T,q)$\\
+State ($\mathcal{S}_T$) & State projection $\mathrm{proj}_s(T)$ & Write-time: revision $U$\\
+Trajectory ($\mathcal{T}_T$) & Transition graph $G_T$ & Query-time: deterministic walk\\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\subsection{What Each Operator Preserves and Discards}
+\begin{table}[t]
+\caption{Preserve/discard patterns.}
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lcc}
+\toprule
+Operator & Preserves & Discards \\
+\midrule
+$\mathcal{R}_T$ & Raw lexical/semantic content & State semantics, temporal order\\
+$\mathcal{S}_T$ & Current beliefs (fact consistency) & Temporal/causal structure, alternatives\\
+$\mathcal{T}_T$ & Temporal order, state evolution & Compactness, query-independence\\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+These preservation and discard patterns determine each operator's structural failure region. $\mathcal{R}_T$ cannot resolve write-time conflicts because it never aggregates conflicting evidence into a single state. $\mathcal{S}_T$ cannot answer historical queries (``What was the original budget?'') because it discards the trajectory at construction time and retains only the latest value per key. $\mathcal{T}_T$ cannot efficiently provide concise state summaries because it preserves the full temporal sequence. No operator preserves all epistemic dimensions; therefore no single operator is complete.
+
+The distinction between operators and storage representations is critical. Operators characterize how memory is accessed, not how it is stored. Vector databases, filesystem hierarchies, SQL tables, knowledge graphs, and semantic workspaces are representation-layer choices: they determine how information is encoded, organized, indexed, or persisted. The epistemic operators studied in this work instead characterize the access mechanism applied over those representations---query-conditioned selection ($\mathcal{R}_T$), query-independent state readout ($\mathcal{S}_T$), or temporally ordered traversal ($\mathcal{T}_T$). Representation determines storage topology; operators determine epistemic accessibility at query time. Consequently, richer representations do not eliminate operator distinctions: the same graph-based memory system may still operate as retrieval, state lookup, or trajectory traversal depending on how access is performed. Our claim concerns access primitives rather than storage formats.
+
+We do not claim that these three operators constitute a complete ontology of memory access mechanisms. Other access mechanisms beyond the scope of this work may instantiate distinct epistemic operators, particularly those that introduce learned recurrence, structured latent state evolution, or programmatic memory control. Our claim is narrower: these three operators represent irreducible access primitives that are empirically dominant in current memory-augmented LLM systems, and their complementarity already makes operator composition a necessary design consideration.
+
+The central implication is not that any one operator is superior---the optimal operator depends on the structure of the query---but that operator choice is an irreducible design decision in memory system architecture. The remainder of this paper formalizes when each operator is appropriate and how to compose them.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig1_three_operators.pdf}
+\caption{Irreducible epistemic projections over a shared memory trajectory. Each operator preserves different epistemic dimensions and discards others, making distinct classes of memory failures structurally unavoidable.}
+\label{fig:three_operators}
+\end{figure*}
+
+% ═══════════════════════════════════════
+\section{Related Work}
+% ═══════════════════════════════════════
+
+\textbf{Current memory systems are single-operator implementations.} The vast majority of memory-augmented LLM systems implement $\mathcal{R}_T$: artifact storage with query-conditioned retrieval \cite{lewis2020rag,chhikara2025mem0,rasmussen2025zep}, varying only in storage structure and retrieval heuristics. LightMem \cite{fang2026lightmem} (ICLR 2026) proposes a three-stage memory with offline consolidation, achieving substantial efficiency gains, but its access mechanism remains query-conditioned retrieval. Graph-based systems such as APEX-MEM \cite{banerjee2026apexmem} (temporal property graph with multi-tool retrieval, ACL 2026) and GSW \cite{rajesh2025gsw} (generative semantic workspace, AAAI 2026 Oral) organize artifacts into structured graphs but still operate through query-conditioned selection. GAM \cite{wu2026gam} proposes hierarchical graph-based consolidation rather than retrieval optimization. Adaptive retrieval systems---UMA \cite{zhang2026uma} (end-to-end RL for memory CRUD unified with QA), ReMemR1 \cite{shi2025rememr1} (retrieval-in-the-loop memory updates)---improve selection mechanisms but remain within the retrieval paradigm. Industry systems---OpenViking \cite{bytedance2026openviking} (ByteDance, 2026, tiered directories), Anthropic CMA \cite{anthropic2026cma} (Anthropic, 2026, mountable memory stores), Google Memory Bank \cite{google2026memorybank} (Vertex AI, 2026, managed vector service)---converge on structured, filesystem-like storage representing a move toward $\mathcal{S}_T$-like access. Our controlled experiments with an OpenViking-aligned implementation confirm structured retrieval improves over flat retrieval (obsolete rate 0.24 vs.\ 0.57) but hits a structural ceiling: no retrieval variant eliminates obsolete value usage, because retrieval as an operator class cannot resolve write-time conflicts.
+
+\textbf{Recent work challenges retrieval sufficiency.} STALE \cite{chao2026stale} provides the clearest external evidence: even when updated evidence is visibly present in retrieval results, it is treated as authoritative only 5.2\% of the time, producing persistent behavioral failure. Their CUPMem prototype confirms that write-time state adjudication substantially improves performance (8.7\% to 68.0\% under the same backbone). STALE identifies the empirical symptoms of memory failure; our operator framework provides a structural explanation---why retrieval fails, when state suffices, and why composition is necessary. DeMem \cite{zou2026demem} proposes decision-centric forgetting criteria. Causal Memory Intervention \cite{srivastava2026causal} treats memory selection as a causal inference problem, selecting memories that are causally useful rather than merely topically relevant---a complementary query-time approach to our write-time revision operator.
+
+\textbf{This paper's position.} Prior work on memory-augmented LLM systems has largely optimized within a single operator class---improving retrieval ranking, enriching state representations, or refining trajectory encoding. This paper studies operator selection and composition: given a set of fundamentally different access mechanisms, how should a system designer choose among them and how should they be combined? The operator composition framework operates at the access layer---how stored representations should be retrieved, projected, or traversed. Complementary work on richer representations, exemplified by STALE's latent state tracking, addresses the representation layer---what should be stored. The two are independent: better representations reduce individual operator failure regions but do not eliminate the structural necessity of operator composition, because no single access mechanism can simultaneously serve retrieval breadth, state consistency, and temporal fidelity. Operator composition is a design decision at a different level from representation engineering.
+
+% ═══════════════════════════════════════
+\section{Why Single Operators Are Not Enough}
+\label{sec:why-not}
+% ═══════════════════════════════════════
+
+\subsection{Memory Access as Epistemic Projection}
+We model agent memory as a trajectory---a sequence of temporally ordered events (\S\ref{sec:operators}). Each memory access operator corresponds to a projection of this trajectory onto a lower-dimensional subspace, preserving some epistemic dimensions and discarding others. $\mathcal{R}_T$ projects onto similarity geometry; $\mathcal{S}_T$ projects onto latest-value compression; $\mathcal{T}_T$ projects onto temporal ordering. No single projection preserves all dimensions. Each operator defines a distinct information-preserving constraint system, not a retrieval strategy. The question is whether the resulting information loss is recoverable through downstream reasoning---our results show it is not.
+
+\subsection{Retrieval: Epistemic Invisibility}
+$\mathcal{R}_T$ induces a regime where contradiction is systematically unobservable under any context size. This is not a claim about performance---it is a claim about what the operator makes structurally impossible to see. A controlled 9-step evidence-accumulation experiment (3 consistent, 4 conflicting, 2 clarifying factual updates) exposes the mechanism.
+
+\paragraph{Co-visibility collapse.} Correct and obsolete evidence are never simultaneously present in the top-$k$ output (co-visibility = 0.00). Retrieval operates in a regime where contradictory evidence is structurally non-co-present, making contradiction non-representable rather than unresolved. The LLM sees an internally consistent but temporally obsolete view of memory, with no perceptual access to the contradiction. Contradiction awareness remains zero across all steps.
+
+\paragraph{Ranking inversion.} A single-trajectory trace at step~9 reveals the mechanism. For the query ``Where does Alice live now?'', the explicit correction---``Alice no longer lives in Seattle. She permanently relocated to Chicago in 2025''---is ranked \#8 behind four obsolete chunks (score 0.038):
+
+\begin{center}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{llr}
+\toprule
+Rank & Evidence chunk & Score\\
+\midrule
+\#1 & Alice lives in Seattle. & 0.125\\
+\#2 & Alice works as a software engineer. & 0.100\\
+\#3 & Alice commutes by bike every day. & 0.100\\
+\#4 & Alice quit engineering and became a designer. & 0.083\\
+\#5 & Alice moved to Chicago. $\leftarrow$ \textit{correct} & 0.077\\
+\#6--\#7 & (evidence about other entities: Bob, Charlie) & 0.045--0.056\\
+\textbf{\#8} & \textbf{Alice no longer lives in Seattle. She permanently relocated to Chicago in 2025.} & \textbf{0.038}\\
+\bottomrule
+\end{tabular}%
+}
+\end{center}
+
+The most authoritative evidence in the trajectory---an explicit correction---is ranked eighth, behind four obsolete chunks. The correction shares identical lexical overlap with the query $\{\text{alice}\}$ but contains 18 additional words that expand the Jaccard denominator by approximately threefold while contributing no additional overlap, driving its score below shorter, information-sparse obsolete chunks. The ranking penalty is structural: similarity metrics redefine epistemic salience in a way that systematically suppresses corrective evidence. The system is biased not toward wrong answers, but toward epistemically incomplete evidence.
+
+\paragraph{Monotonic degradation.} The obsolete rate rises from 0.00 to 0.57 by step~9. Append-only storage combined with similarity ranking induces a trajectory of progressive epistemic drift toward stale fixed points.
+
+\paragraph{Systematic instability.} Across four independently constructed trajectories with identical evidence structure, $\mathcal{R}_T$ obtains $0.39\pm0.14$ (range 0.286--0.571), while $\mathcal{S}_T$ converges to $0.00\pm0.00$ --- a structural property, not noise. The $2\times$ spread is not noise but structured variation: retrieval ranking depends on query-evidence lexical alignment, which varies across domains and is not under the system designer's control. $\mathcal{R}_T$ behaves as a stochastic sampler with no fixed epistemic point.
+
+\paragraph{Architectural ceiling.} The ceiling persists across retrieval architectures. A filesystem-paradigm retriever (OpenViking-aligned, hierarchical directories with L0/L2 retrieval) reduces the obsolete rate from 0.57 to 0.24; adding LLM-enhanced L0 generation and query rewriting further reduces it to 0.15 --- but this failure pattern is invariant under retrieval design class. No retrieval variant eliminates obsolete value usage. $\mathcal{S}_T$ with write-time revision maintains 0.00.
+
+\paragraph{Causal attribution.} The counterfactual design---same trajectory, same evidence, same queries, same model, differing only in whether revision operator $U$ is applied---establishes that the gap ($0.57$ vs.\ $0.00$) is causally attributable to operator choice. $\mathcal{R}_T$ cannot maintain a consistent state because it has no state to maintain; $\mathcal{S}_T$ can, because it separates write-time resolution from read-time access. This is not an implementation difference---it is a structural consequence of the operators' definitions.
+
+$\mathcal{R}_T$ does not fail to represent conflict; it defines an attention geometry in which conflicting evidence cannot enter a shared representational subspace. Contradiction is not lost; it is never jointly instantiated.
+
+\subsection{State Lookup: Certainty via Collapse}
+$\mathcal{S}_T$ eliminates retrieval-induced conflict by collapsing memory into a single-valued epistemic region. This is not a retrieval improvement---it is a different epistemic regime. $\mathcal{S}_T$ does not return uncertain distributions over possible states; it returns a single committed value. It replaces epistemic uncertainty with representational definiteness. This induces an epistemic asymmetry: what is represented is knowable with certainty; what is discarded becomes irrecoverable even under perfect downstream reasoning. This loss is irreversible under any downstream inference, as missing representational dimensions are never instantiated in the input space. Under the 9-step conflict accumulation protocol, $\mathcal{S}_T$ converges to $0.00$ obsolete rate across all four trajectories. State extraction by LLM from unstructured text achieves $3.85\%$ vs.\ $19.23\%$ for flat retrieval ($5\times$ improvement). Extraction error is bounded ($\approx0.04$) and does not compound with memory size; retrieval error is unbounded because ranking competition grows with the artifact pool. This stability is achieved by eliminating representational multiplicity at construction time, making uncertainty non-representable rather than unresolved. As a result, any temporal or relational query is structurally projected out of the representation space.
+
+The per-pattern MSFT breakdown reveals where $\mathcal{S}_T$ makes queries structurally unaskable:
+
+\begin{table*}[t]
+\caption{Operator-specific failure regions (112-case MSFT).}
+\centering
+\footnotesize
+\begin{tabular}{lcccl}
+\toprule
+Pattern & $\mathcal{R}_T$ & $\mathcal{S}_T$ & $\mathcal{T}_T$ & Root\\
+\midrule
+past\_state & $\mathbf{1.000}$ & $0.167$ & $0.750$ & $\mathcal{S}_T$ discards history\\
+cross\_entity & $0.500$ & $\mathbf{0.125}$ & $0.625$ & cannot align temporal axes\\
+temporal\_relationship & $0.667$ & $\mathbf{0.000}$ & $0.750$ & no temporal representation\\
+correction\_chain & $0.750$ & $\mathbf{0.917}$ & $0.833$ & collapses to final value\\
+multi\_path & $\mathbf{0.917}$ & $0.333$ & $0.750$ & overwrites branch values\\
+negative\_evidence & $0.667$ & $0.500$ & $0.583$ & ---\\
+implicit\_conflict & $0.667$ & $0.500$ & $0.667$ & ---\\
+ambiguous & $0.500$ & $0.500$ & $0.500$ & no uncertainty mechanism\\
+\addlinespace
+Overall 112 & $\mathbf{0.679}$ & $0.384$ & $0.661$ & best single: $\mathcal{R}_T$\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+$\mathcal{S}_T$ does not merely perform poorly on historical queries (past\_state: 0.167), cross-entity temporal alignment (cross\_entity: 0.125), and temporal reasoning (temporal\_relationship: 0.000)---it makes these query classes structurally unaskable within its representational space. It succeeds where compression is beneficial: correction\_chain (0.917), where collapsing to the latest value is the correct operation.
+
+\paragraph{Cross-model invariance.} To distinguish operator-inherent failures from model-specific weakness, we evaluate all three operators on four LLMs under identical protocol. $\mathcal{S}_T$ fails on 29/112 cases across all four models---25.9\% structurally inaccessible regardless of model family or capability (Appendix~E.7). The failures concentrate in past\_state (9/12, 75\%) and cross\_entity (7/16, 43.8\%). Wrong answers are near-verbatim identical across models: on a past\_state query, all four models answer with the current value rather than the historical value. These failures are model-independent because the information loss is imposed at representation construction time, not at reasoning time. In contrast, $\mathcal{R}_T$ and $\mathcal{T}_T$ failures are substantially model-dependent: only 4 of 112 cases fail across all models for each operator. $\mathcal{S}_T$ is \textbf{representation-limited}; $\mathcal{R}_T$ is \textbf{geometry-limited}.
+
+$\mathcal{S}_T$ delivers certainty by erasing alternatives. Its strength is its weakness: the same projection that eliminates conflict also eliminates the capacity to ask certain questions.
+
+\subsection{Trajectory Walk: Completeness without Compressibility}
+$\mathcal{T}_T$ preserves the full epistemic trace but violates the representational compressibility required for decision-time inference. It is the only operator that preserves epistemic history without projection-induced loss, but at the cost of non-compressibility for downstream decision making. On path-dependent patterns, it excels where both alternatives struggle: temporal\_relationship ($0.750$), multi\_path ($0.750$), cross\_entity ($0.625$). These queries require following a sequence of state changes---an operation that retrieval over independent chunks and state lookup over collapsed values cannot perform. On correction\_chain ($0.833$), however, $\mathcal{T}_T$ provides the full event stream where a single key-value readout ($\mathcal{S}_T$, $0.917$) suffices. $\mathcal{T}_T$ is the most complete temporal witness but the least compressible into a decision-ready form. $\mathcal{T}_T$ is the only operator that preserves epistemic completeness in principle, but cannot reduce it into a bounded decision representation.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig2_phase_map.pdf}
+\caption{Operator phase map across five epistemic regimes (DeepSeek Flash). Each cell shows accuracy; darker fill indicates stronger performance. Best operators differ per regime---no single operator dominates all axes.}
+\label{fig:phase_map}
+\end{figure*}
+
+\subsection{From Trilemma to Structural Incompatibility}
+The three operators define mutually exclusive constraints over a shared epistemic space. No projection can simultaneously preserve co-visibility of conflicting evidence, temporal structure, and decision-time compressibility.
+
+$\mathcal{R}_T$ induces \textbf{visibility collapse}: similarity-based selection structurally suppresses longer, more informative correction evidence, making contradiction unobservable regardless of context size. Conflict is not resolved---it is excluded from the representational space.
+
+$\mathcal{S}_T$ induces \textbf{temporal collapse}: by projecting the full trajectory onto latest-value compression, it eliminates representational multiplicity and with it any capacity to answer historical or cross-entity queries. Consistency is achieved through erasure, not resolution.
+
+$\mathcal{T}_T$ induces \textbf{compression collapse}: by preserving the full temporal sequence, it maintains access to all evidence but sacrifices compactness and query-independence, making it the most complete but least efficient operator.
+
+These patterns are irreducible: $\mathcal{R}_T$ succeeds where $\mathcal{S}_T$ fails (past\_state $1.000$ vs.\ $0.167$); $\mathcal{S}_T$ succeeds where $\mathcal{R}_T$ is weaker (correction\_chain $0.917$ vs.\ $0.750$); $\mathcal{T}_T$ dominates temporal access where both alternatives are incapable. The optimal operator per pattern varies across models on seven of eight patterns (Appendix~E.7).
+
+Any single operator induces a structurally unavoidable epistemic blind region that cannot be recovered through composition at inference time. Memory reasoning cannot be reduced to any single operator without structural loss of epistemic dimensions. This is not a failure of engineering but a \textbf{representational impossibility under single-projection memory access}. Single-operator memory access is not a suboptimal choice that can be incrementally improved---every projection permanently disables at least one epistemic dimension. Therefore, memory reasoning is not an operator selection problem but a problem of reconstructing a complete epistemic state from incompatible projections. This necessitates dynamic composition: a system must select, combine, and calibrate complementary operators to span the irreducible epistemic space. The next section develops composition over incompatible projections as the structural response to this impossibility.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig3_failure_dynamics.pdf}
+\caption{Inference-time failure dynamics under three epistemic projections. Different queries induce different context construction failures---stale belief propagation ($\mathcal{R}_T$), temporal reasoning failure ($\mathcal{S}_T$), and reasoning diffusion ($\mathcal{T}_T$).}
+\label{fig:failure_dynamics}
+\end{figure*}
+
+% ═══════════════════════════════════════
+\section{Composition over Incompatible Projections}
+\label{sec:composition}
+% ═══════════════════════════════════════
+
+\subsection{From Structural Incompatibility to Composition Necessity}
+Section~\ref{sec:why-not} established that each of the three operators induces a structurally unavoidable epistemic blind region, and that these blind regions are complementary rather than overlapping. The remaining question is not which operator to choose, but how to recover usable epistemic coverage from complementary projections over a shared memory trajectory. Composition is necessary because the missing information under one projection is not recoverable within that projection's representational space. Coverage can only be reconstructed by combining operators that preserve complementary epistemic dimensions. The three operators interact with five epistemic axes (temporal access, conflict resolution, entity composition, epistemic uncertainty, counterfactual grounding), forming a $3\times5$ space of projection-compatibility interactions. We empirically characterize this space to identify which operator preserves the required epistemic structure for each axis.
+
+\subsection{The Phase Map}
+The phase map is an empirical chart of which epistemic regimes remain representable under each projection operator. It is not a leaderboard of operator performance; it is a characterization of projection-compatibility across epistemic regimes.
+\begin{table*}[t]
+\caption{Operator phase map: compatible projections across five epistemic axes.}
+\centering
+\footnotesize
+\begin{tabular}{lcccc}
+\toprule
+Axis & $\mathcal{R}_T$ & $\mathcal{S}_T$ & $\mathcal{T}_T$ & Compatible \\
+\midrule
+Temporal access & $0.617$ & $0.433$ & $\mathbf{0.700}$ & $\mathcal{T}_T$ (ordered traversal)\\
+Conflict resolution & $0.817$ & $\mathbf{0.950}$ & $\mathbf{0.967}$ & $\mathcal{S}_T\approx\mathcal{T}_T$ (compression or temporal support)\\
+Entity composition & $\mathbf{0.533}$ & $0.700$ & $0.650$ & $\mathcal{S}_T > \mathcal{T}_T$ (relational binding favors compression)\\
+Epistemic uncertainty & $0.550$ & $\mathbf{1.000}$ & $0.550$ & $\mathcal{S}_T$ (compression eliminates ambiguity)\\
+Counterfactual grounding & $0.900$ & $0.817$ & $\mathbf{1.000}$ & $\mathcal{T}_T$ (temporal record preserves conditionality)\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Each axis favors a different operator because each operator preserves a different epistemic dimension (\S\ref{sec:operators}): $\mathcal{T}_T$ preserves temporal order, $\mathcal{S}_T$ preserves fact consistency through compression, $\mathcal{R}_T$ preserves raw content but discards structure. On conflict resolution, $\mathcal{S}_T$ and $\mathcal{T}_T$ both succeed because they both resolve contradiction---$\mathcal{S}_T$ through write-time compression that collapses to the latest value, $\mathcal{T}_T$ through temporal support that surfaces the full resolution chain. Together, these dominance patterns form a compatibility map: which projection is structurally aligned with which epistemic demand.
+
+A cross-regime comparison confirms that this compatibility structure is stable across structured and natural language inputs:
+
+\begin{table*}[t]
+\caption{Cross-regime operator comparison.}
+\centering
+\footnotesize
+\begin{tabular}{lcccc}
+\toprule
+Operator & Structured & NL & Delta & Property \\
+\midrule
+$\mathcal{R}_T$ & $0.680$ & $0.683$ & $+0.003$ & Regime-invariant\\
+$\mathcal{S}_T$ & $0.500$ & $0.780$ & $+0.280$ & Compression\\
+$\mathcal{T}_T$ & $0.880$ & $0.773$ & $-0.107$ & Ordered-access\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+$\mathcal{R}_T$ is regime-invariant: its performance depends on similarity geometry between query and memory surface forms, independent of how information is organized. $\mathcal{S}_T$ shows compression behavior: natural language provides implicit normalization that improves extraction. $\mathcal{T}_T$ is ordered-access: its effectiveness depends on explicit temporal ordering, and degrades when ordering must be inferred from natural language. Cross-model validation (GPT-4o-mini) shows only the compression property is model-independent; the regime-invariance and ordered-access properties vary with model capability, reinforcing the necessity of model calibration (\S\ref{sec:composition}).
+
+\subsection{Composition Methodology}
+The phase map provides the empirical foundation for a composition methodology that recovers epistemic coverage from structurally incomplete operators. The methodology does not optimize any single operator; it prevents epistemically incompatible operator-query pairings by dispatching each query to the operator whose projection is structurally compatible with the query's epistemic demand.
+
+\textbf{Step 1: Decompose the task space.} Identify the epistemic axes present in the target task---temporal access, conflict resolution, entity composition, epistemic uncertainty, counterfactual grounding, or others specific to the domain. Each axis corresponds to a distinct cognitive operation that may require a different access mechanism. In this work, task decomposition is performed manually by the authors informed by the structure of each benchmark; automating or standardizing this step is an open problem discussed in \S\ref{sec:limitations}.
+
+\textbf{Step 2: Map each axis to a compatible projection, then calibrate for the target model.} The phase map (\S\ref{sec:composition}) assigns each epistemic axis to the projection that preserves its required structure: temporal access $\rightarrow \mathcal{T}_T$, epistemic uncertainty $\rightarrow \mathcal{S}_T$, entity composition $\rightarrow \mathcal{S}_T$ (avoid $\mathcal{R}_T$), conflict resolution $\rightarrow \mathcal{S}_T$ or $\mathcal{T}_T$, counterfactual grounding $\rightarrow \mathcal{T}_T$. This mapping identifies structurally compatible operator-query pairings. The phase map is measured on a single backbone model; the exact dominance boundary between operators can shift when the model changes---on DeepSeek Flash, operators are balanced and routing gains are larger; on GPT-4o-mini, $\mathcal{T}_T$ dominates and gains are smaller. To account for this, measure operator accuracies on a small diagnostic sample (\S\ref{sec:why-not}) under the target model and adjust the mapping accordingly. The phase map provides the structural prior; calibration corrects for backbone-dependent shifts.
+
+\textbf{Step 3: Compose through type-safe routing.} Implement a router that classifies each query into its epistemic axis and dispatches to the operator whose projection is structurally compatible with that query's epistemic demand. The routing architecture is type-safe (one query, one operator) to avoid fusion ambiguity. Composition improves performance not by enhancing any individual operator, but by preventing structurally mismatched operator-query pairings. The front-end classifier is a replaceable component; the operator layer is stable (\S\ref{sec:why-not}).
+
+\textbf{Step 4: Validate against single-operator baselines.} Compare the composed system against each single operator on the target benchmark. If composition does not improve coverage over the best single operator, the task space may be too homogeneous for composition, or the phase calibration may need adjustment. Across all tested benchmarks and backbone models, calibrated composition consistently recovers task regions inaccessible to any single operator (\S\ref{sec:validation}).
+
+The following section validates this methodology across three benchmarks and four backbone models.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig4_architecture_from_png.pdf}
+\caption{Composition methodology architecture. Queries are decomposed into epistemic axes, mapped to compatible projections via the phase map, calibrated for the target backbone model, and dispatched through type-safe routing. The front-end classifier is a replaceable component; the operator layer ($\mathcal{R}_T$, $\mathcal{S}_T$, $\mathcal{T}_T$) is stable across models.}
+\label{fig:architecture}
+\end{figure*}
+
+% ═══════════════════════════════════════
+\section{Validating Composition}
+\label{sec:validation}
+
+Section~\ref{sec:why-not} established that single operators induce irreducible blind regions. Section~\ref{sec:composition} proposed composition over incompatible projections as the structural response. This section validates that response across four questions: does composition recover coverage (\S\ref{sec:validation}), does the methodology transfer across benchmarks, where does the current operator basis reach its limits, and is calibration necessary rather than optional.
+
+\subsection{Coverage Recovery}
+\label{sec:coverage-recovery}
+\textbf{Does composition recover task regions inaccessible to any single operator?} We apply the methodology from \S\ref{sec:composition} to the 112-case MSFT benchmark. All three operators and the composed system use the same backbone LLM (DeepSeek Flash, temperature 0.0), same evidence, same binary judge. The composed system achieves $0.817$ against $0.679$ for the best single operator ($\mathcal{R}_T)$---a gain of $+0.138$. The operator layer produces zero new failures; all 19 residual failures stem from the IntentDetector front-end (10 recall errors) or known operator boundaries (6 cross\_entity cases). The theoretical upper bound with perfect routing is $0.913$, confirming the routing architecture is not the bottleneck---the front-end classifier is a replaceable component.
+
+The routing gain is not an ensemble effect: each operator is queried independently for its assigned query type, and no query is processed by more than one operator. The gain arises from matching each query to the operator whose projection preserves the epistemic dimensions required by that query---not from statistical aggregation.
+
+On GPT-4o-mini, calibrated composition achieves $0.830$ vs.\ $0.812$ ($+0.018$). While the gain is smaller than on DeepSeek Flash ($+0.138$)---attributable to GPT-4o-mini's $\mathcal{T}_T$ dominance reducing operator diversity---the direction is consistent. Across all tested models, calibrated composition empirically maintains accuracy at or above the best single operator. This non-inferiority property, rather than the magnitude of any individual routing gain, is the methodological guarantee: system designers can adopt calibrated composition without risk of degrading below the best single-operator baseline.
+
+\subsection{External Generalization}
+\label{sec:stale}
+\textbf{Does the composition methodology transfer to unseen epistemic regimes without redesign?} The STALE benchmark \cite{chao2026stale} provides 400 conflict scenarios with 1,200 evaluation queries across three dimensions---State Resolution, Premise Resistance, and Implicit Policy Adaptation---in a conversational domain distinct from the entity-attribute structure of MSFT. We apply the same four-step methodology without redesign: the task space is decomposed into epistemic axes (dim1 $\rightarrow$ epistemic uncertainty, dim2 $\rightarrow$ conflict resolution, dim3 $\rightarrow$ temporal access, Type II $\rightarrow$ entity composition), the phase map selects the initial operators, and the router dispatches accordingly. $\mathcal{S}_T$ handles dim1 and dim2 (state readout with premise verification for conflict resolution), $\mathcal{T}_T$ handles dim3 (temporal context for action recommendations), and $\mathcal{T}_T$ is used for all dimensions in Type II scenarios (propagation chains visible in trajectory). The system runs on DeepSeek Flash with a rule-based keyword judge.
+
+\begin{table*}[t]
+\centering\small
+\caption{STALE performance by type and dimension.}
+\begin{tabular}{lcccl}
+\toprule
+Type & SR & PR & IPA & Routing \\
+\midrule
+T1 ($n=200$) & $0.540$ & $1.000$ & $0.580$ & $\mathcal{S}_T$(dim1/2), $\mathcal{T}_T$(dim3) \\
+T2 ($n=200$) & $0.450$ & $0.880$ & $0.860$ & $\mathcal{T}_T$(all) \\
+\addlinespace
+All ($n=400$) & $0.495$ & $0.940$ & $0.720$ & Overall: $0.718$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+The composed system achieves $0.718$ overall against CUPMem's $0.680$, though direct comparison is confounded by backbone model differences (DeepSeek Flash vs.\ GPT-4o-mini) and judge methodology. The structural claim is independent of this number: composition gains follow from operator complementarity, and the phase-map-driven methodology transfers to external conflict regimes without modification. Full routing strategy and failure taxonomy are reported in Appendix~F.
+
+\subsection{Scaling Limits}
+\label{sec:atmscaling}
+\textbf{What happens when the epistemic space exceeds the current operator basis?} ATM-Bench \cite{mei2026atmbench} provides 1013~QA over four years of personal multimodal memory---a scale and domain beyond the controlled MSFT and STALE benchmarks. $\mathcal{S}_T$ is evaluated as a Retrieval+KV variant; the primary operator-level comparison is between $\mathcal{R}_T$ and $\mathcal{T}_T$, where $\mathcal{T}_T$ uses oracle trajectory access and represents an epistemic upper bound.
+
+\begin{table*}[t]
+\centering\small
+\caption{ATM-Bench operator-level accuracy by question type.}
+\begin{tabular}{lcccc}
+\toprule
+Condition & Accuracy & Number & List & Open \\
+\midrule
+$\mathcal{R}_T$ & $0.399$ & $0.469$ & $0.151$ & $0.416$ \\
+$\mathcal{S}_T$ (Retrieval+KV) & $0.175$ & $0.172$ & $0.094$ & $0.198$ \\
+$\mathcal{T}_T$ (oracle trajectory) & $\mathbf{0.518}$ & $0.622$ & $0.144$ & $0.547$ \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+$\mathcal{T}_T$ uniquely covers $16.3\%$, $\mathcal{R}_T$ uniquely $3.4\%$, and $42.3\%$ are uncovered. The uncovered fraction is not a method failure---it is empirical evidence that the epistemic space exceeds the current three-operator projection basis. This aligns with the framework's design: the composition methodology accommodates additional operator classes as they are identified (\S\ref{sec:operators}, \S\ref{sec:limitations}). The trajectory advantage grows from $+0.092$ (1 evidence, $n=764$) to $+0.320$ ($4+$ evidence items, $n=50$), consistent with $\mathcal{T}_T$'s structural property of preserving temporal ordering. We emphasize that the ATM-Bench $\mathcal{T}_T$ results use oracle trajectory access and represent an epistemic upper bound. On MSFT and STALE, where $\mathcal{T}_T$ uses real session ordering and entity-scoped walks, the methodology is validated end-to-end. Full analysis (including Hard-31, projection bottleneck, and evidence count gradient) is reported in Appendix~C.
+
+\subsection{Cross-Model Calibration}
+\label{sec:crossmodel}
+\textbf{Is calibration optional?} To test whether a single routing table suffices across backbone models, we evaluate individual operators $\mathcal{R}_T$/$\mathcal{S}_T$/$\mathcal{T}_T$ on four LLMs with identical protocol (MSFT 112-case, unified DeepSeek Flash judge):
+
+\begin{table*}[t]
+\caption{Operator accuracies across backbone models (MSFT 112).}
+\centering
+\footnotesize
+\begin{tabular}{lcccc}
+\toprule
+Model & $\mathcal{R}_T$ & $\mathcal{S}_T$ & $\mathcal{T}_T$ & Best\\
+\midrule
+DeepSeek Flash & $0.679$ & $0.384$ & $0.661$ & $\mathcal{R}_T$\\
+DS V4 Pro & $0.839$ & $0.625$ & $0.786$ & $\mathcal{R}_T$\\
+GPT-4o-mini & $0.741$ & $0.527$ & $0.812$ & $\mathcal{T}_T$\\
+Claude Sonnet 4 & $0.795$ & $0.491$ & $0.830$ & $\mathcal{T}_T$\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Operator complementarity holds across all models---each model exhibits distinct accuracy distributions across the three operators, confirming that operator decomposition is meaningful regardless of backbone. Only $\mathcal{S}_T$ on past\_state and cross\_entity is model-invariant. On 7/8 epistemic patterns, the optimal operator differs across models (Appendix~E.7). Therefore, no universal routing table exists---any routing policy derived from one model's phase map requires empirical calibration before transfer. Operator complementarity is model-independent; optimal routing is model-conditioned. This asymmetry directly necessitates Step~2 of the methodology (\S\ref{sec:composition}): the phase map provides the structural prior, and calibration corrects for backbone-dependent dominance shifts.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig5_cross_model.pdf}
+\caption{Cross-model evidence for model-independent complementarity and model-conditioned routing. \textbf{(a)} $\mathcal{S}_T$ fails on the same 29/112 cases across all four backbone LLMs with near-verbatim identical wrong answers. In contrast, $\mathcal{R}_T$ and $\mathcal{T}_T$ each fail on only 4/112 cases across all models. \textbf{(b)} The best single operator flips between DeepSeek-family models (favoring $\mathcal{R}_T$) and GPT/Claude-family models (favoring $\mathcal{T}_T$). On 7/8 epistemic patterns the best operator shifts across models---no universal routing table exists.}
+\label{fig:cross_model}
+\end{figure*}
+
+% ═══════════════════════════════════════
+\section{Discussion and Limitations}
+\label{sec:limitations}
+% ═══════════════════════════════════════
+
+Memory access is fundamentally constrained by mutually incompatible epistemic projections, recoverable only through composition rather than optimization of a single access mechanism. Composition does not function as an ensemble---each query is dispatched to exactly one operator, and the gain arises from preventing structurally mismatched pairings, not from aggregating multiple outputs (\S\ref{sec:coverage-recovery}). The phase map provides the structural prior; calibration accounts for backbone-dependent dominance shifts (\S\ref{sec:crossmodel}). Across all tested settings, calibrated composition never underperforms the best single operator, establishing non-inferiority as a methodological property rather than an empirical coincidence.
+
+These limitations reflect the current boundary of the operator-based epistemic access framework.
+
+\textbf{Static routing.} The composed system uses deterministic rule-based routing derived from per-pattern phase analysis. A dynamic router that learns query-to-operator mappings from data could adapt to distribution shifts and model-specific operator strengths, potentially increasing the routing gain beyond the fixed-rule baseline.
+
+\textbf{Operator scope.} We identify three epistemic operators but do not claim this set is exhaustive. Our claim is narrower: these three represent irreducible access primitives that are empirically dominant in current memory-augmented LLM systems (\S\ref{sec:operators}). Other access mechanisms beyond the scope of this work may instantiate distinct epistemic operators, particularly those that introduce learned recurrence, structured latent state evolution, or programmatic memory control. The structural weakness of $\mathcal{S}_T$ on cross-entity queries (\S\ref{sec:why-not}) suggests one such candidate---a relational join operator across entity temporal axes. A systematic search over the Cartesian product of epistemic axes and access mechanisms would be needed to determine closure. We emphasize that this paper does not propose a complete ontology of memory operators; it proposes a design methodology for composition given whatever operators are available.
+
+\textbf{S$_T$ implementation gap.} The state operator on ATM-Bench uses a Retrieval+KV variant rather than true state projection with write-time revision. True state dynamics are validated separately through controlled trajectory comparisons (Appendix~H).
+
+\textbf{Metric alignment.} Our binary LLM judge differs from ATM-Bench's question-type-specific QS. The two metrics are directionally aligned on open-ended questions.
+
+\textbf{MSFT-NL scope.} The cross-regime analysis uses 300 automatically generated NL cases from parameterized templates with randomized entity names and surface forms. Template-based generation introduces a potential confound: systematic patterns in template structure may inflate or deflate specific operator-axis interactions. Intra-template variance is not reported, and real-world NL validation remains future work. Cross-model validation is limited to the structured MSFT benchmark; extending to the NL regime would further test the stability of the operator phase map across models.
+
+\textbf{Task decomposition robustness.} Step~1 of the methodology (decomposition of task space into epistemic axes) is performed manually by the authors. The reproducibility of this decomposition across annotators is not quantified, and no automated procedure is proposed. An inter-annotator agreement study or automated axis-classification method would strengthen confidence in the methodology's deployability.
+
+\textbf{Single judge model.} All operator evaluations across all benchmarks use DeepSeek Flash as the sole judge. In cross-model experiments, GPT-4o-mini and Claude Sonnet 4 answers are also judged by DeepSeek Flash. If the judge model has systematic preferences (lexical overlap bias, format preference), these could inflate DeepSeek-family operator scores relative to other models. A cross-judge validation using an alternative judge model on a subset of cases would quantify this risk.
+
+\textbf{T$_T$ oracle gap.} On ATM-Bench, $\mathcal{T}_T$ uses oracle trajectory access (ground-truth evidence IDs and session ordering). On MSFT and STALE, $\mathcal{T}_T$ uses real session ordering and entity-scoped walks. The gap between oracle and deployable trajectory access on ATM-Bench is not quantified; the ATM-Bench results should be interpreted as an epistemic upper bound rather than a validation of the full composition methodology in a deployable setting.
+
+\textbf{Cross-entity boundary.} No operator can reliably align two entities' temporal axes---a known theoretical gap motivating possible fourth operator classes beyond the three identified here.
+
+% ═══════════════════════════════════════
+\section{Conclusion}
+% ═══════════════════════════════════════
+
+Memory-augmented LLM agents must choose how to access the past. Retrieval---query-conditioned selection over an artifact pool---is the dominant paradigm, but it is only one of at least three structurally distinct epistemic operators. State lookup preserves fact consistency but discards temporal structure; trajectory walk preserves temporal order but sacrifices compactness. No single operator is complete: each induces an irrecoverable projection failure over a shared memory trajectory. Composition over incompatible projections recovers epistemic coverage by dispatching each query to the operator whose projection preserves the required epistemic dimensions. Cross-model validation confirms that this complementarity is model-independent, while optimal routing is model-conditioned---state lookup fails on the same cases across all tested models; retrieval and trajectory preferences shift with the backbone LLM. A composed system following model-calibrated routing achieves consistent gains over the best single operator across structured, natural-language, and external conflict benchmarks, while empirically maintaining non-inferiority across all tested settings. Extending the operator basis beyond the three primitives studied here, automating task-space decomposition, and validating across additional backbone models and judge protocols are natural next steps that the composition framework is designed to accommodate. The central implication is that memory system design should be reframed as operator composition over irreducible epistemic projections, rather than representation optimization under a single access paradigm.
+
+% ═══════════════════════════════════════
+% APPENDICES
+% ═══════════════════════════════════════
+
+\appendix
+\section*{Appendix A: Operator Definitions and System Mapping}
+\subsection*{A.1 Formal Operator Definitions}
+
+\textbf{Definition (Retrieval Operator).} $\mathcal{R}_T(q) = \text{top-}K_\theta(M_T, q)$ where $M_T = \{e_1,\dots,e_n\}$ is the unordered artifact pool and $\text{top-}K_\theta$ selects the $K$ evidence chunks with highest similarity to $q$ under similarity measure $\theta$. The operator has no internal state, no write-time resolution, and depends on $q$ for context selection.
+
+\textbf{Definition (State Operator).} $\mathcal{S}_T(q) = \{(k,\text{latest}(T,k)) \mid k\in\text{dom}(\mathrm{proj}_s(T))\}$ where $\text{latest}(T,k) = \max_t\{v \mid (k,v,t)\in T\}$. The operator is query-independent for context: it returns all active key-value pairs. Write-time conflict resolution is performed by revision operator $U$.
+
+\textbf{Definition (Trajectory Operator).} $\mathcal{T}_T(q) = \text{walk}(G_T, C_q)$ where $G_T = (V,E)$ with $V = \{e_1,\dots,e_n\}$, $E = \{(e_i,e_{i+1})\}$, and $C_q$ is an optional constraint derived from $q$. The simplest form (tested in MSFT) is $\text{walk}(G_T)$---unconstrained walk from $t=1$ to $t=n$ for the target entity.
+
+\subsection*{A.2 Paradigm Comparison}
+\begin{table}[h]
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lccc}
+\toprule
+Property & $\mathcal{R}_T$ & $\mathcal{S}_T$ & $\mathcal{T}_T$\\
+\midrule
+Memory object & Artifact collection $M_T$ & Belief state $B_t$ & Transition graph $G_T$\\
+Access & Query-conditioned selection & State readout & Ordered path walk\\
+Write-time & Append & Revision $U$ & Append + indexing\\
+Query-time & Similarity ranking & None (direct) & Entity-scoped traversal\\
+Invariance & Not guaranteed & Maintained ($q$-independent) & Path-dependent, deterministic\\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\subsection*{A.3 Axiom Coverage Matrix}
+\begin{table}[h]
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lcccc}
+\toprule
+System & Global state & Consistency obj. & Revision & Evidence\\
+\midrule
+FadeMem & Yes & Yes & Yes & Belief decay w/ confidence\\
+DeltaMem & Yes & Yes & No & Tracks deltas, no resolution\\
+BeliefMem & Yes & Yes & Yes & Source credibility revision\\
+UMA & No & No & No & Adaptive retrieval, no state\\
+STALE \cite{chao2026stale} & Yes & Yes & Yes & CUPMem: write-time adjudication\\
+\textbf{This work} & Yes & Yes & Yes & $U$ + controlled comparison\\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\section*{Appendix B: MSFT Extended Results}
+\subsection*{B.1 Full 8-Pattern Breakdown (112 cases, DeepSeek Flash)}
+\begin{table}[h]
+\centering\footnotesize
+\begin{tabular}{lcccl}
+\toprule
+Pattern & n & $\mathcal{R}_T$ & $\mathcal{S}_T$ & $\mathcal{T}_T$\\
+\midrule
+ambiguous & 24 & $0.500$ & $0.500$ & $0.500$\\
+correction\_chain & 12 & $0.750$ & $0.917$ & $0.833$\\
+cross\_entity & 16 & $0.500$ & $0.125$ & $0.625$\\
+implicit\_conflict & 12 & $0.667$ & $0.500$ & $0.667$\\
+multi\_path & 12 & $0.917$ & $0.333$ & $0.750$\\
+negative\_evidence & 12 & $0.667$ & $0.500$ & $0.583$\\
+past\_state & 12 & $1.000$ & $0.167$ & $0.750$\\
+temporal\_relationship & 12 & $0.667$ & $0.000$ & $0.750$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection*{B.2 112-Case Scaling}
+\begin{table}[h]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccc}
+\toprule
+System & Accuracy & Case set & Failures & Failure Source\\
+\midrule
+Composed & $0.817$ & 112 & 19 & IntentDetector recall (10), boundary (6), other (3)\\
+Best single ($\mathcal{R}_T$) & $0.679$ & 112 & --- & ---\\
+Theoretical upper bound & $0.913$ & 112 & --- & Perfect routing\\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\subsection*{B.3 Routing Strategy}
+The composed system uses a type-safe design: one intent, one operator. Each of 8 pattern types maps to exactly one operator via deterministic rules: past\_state $\rightarrow \mathcal{R}_T$, temporal\_relationship $\rightarrow \mathcal{T}_T$, multi\_path $\rightarrow \mathcal{T}_T$, negative\_evidence $\rightarrow \mathcal{T}_T$, correction\_chain $\rightarrow \mathcal{S}_T$, cross\_entity $\rightarrow \mathcal{R}_T$, implicit\_conflict $\rightarrow \mathcal{S}_T$, ambiguous $\rightarrow$ uncertainty protocol. These routing rules represent the classification decisions of the IntentDetector front-end, whose errors account for the gap between the achieved routing gain ($+0.138$) and the theoretical upper bound ($0.913$).
+
+\section*{Appendix C: ATM-Bench Analysis}
+\subsection*{C.1 Projection Bottleneck}
+\begin{table}[h]
+\centering\footnotesize
+\begin{tabular}{lccc}
+\toprule
+Evidence in top-5 & $\mathcal{R}_T$ & $\mathcal{T}_T$ & Gap\\
+\midrule
+Yes & $0.542$ & $0.610$ & $+0.068$\\
+No & $0.024$ & $0.488$ & $+0.464$\\
+\textbf{Overall} & $\mathbf{0.399}$ & $\mathbf{0.518}$ & $\mathbf{+0.119}$\\% [RESTORED FROM v17]
+\bottomrule
+\end{tabular}
+\end{table}
+
+$\mathcal{R}_T$ accuracy collapses to $0.024$ when evidence is outside the top-5 retrieval window.% [RESTORED FROM v17: added "top-5" for precision]
+$\mathcal{T}_T$ achieves $0.488$ under the same condition because it accesses evidence through chronological ordering rather than similarity ranking.% [RESTORED FROM v17]
+
+\subsection*{C.2 Hard-31}
+$\mathcal{R}_T\ 0.032$, $\mathcal{S}_T\ 0.065$, $\mathcal{T}_T\ 0.194$.
+
+\subsection*{C.3 Evidence Count Gradient}
+\begin{table}[h]
+\centering\footnotesize
+\begin{tabular}{lccc}
+\toprule
+Items & n & $\mathcal{R}_T$ & $\mathcal{T}_T$\\
+\midrule
+1 & 764 & $0.450$ & $0.542$\\
+2 & 148 & $0.236$ & $0.405$\\
+3 & 51 & $0.314$ & $0.510$\\
+$4+$ & 50 & $0.180$ & $0.500$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section*{Appendix D: MSFT-NL Phase Data}
+\subsection*{D.1 Template-Based NL Generation}
+The MSFT-NL benchmark generates 300 natural language cases across 5 epistemic axes via template parameterization. Each axis has 60 cases with randomized entity names, surface forms, and distractor content.
+
+\begin{table}[h]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lll}
+\toprule
+Axis & Epistemic operation & Example query\\
+\midrule
+Temporal access & Order/duration between events & ``Which happened first?''\\
+Conflict resolution & Resolving contradictory evidence & ``What is the current value?''\\
+Entity composition & Cross-entity relational binding & ``Which entity was at X?''\\
+Epistemic uncertainty & Detecting underdetermined questions & ``Can this be answered?''\\
+Counterfactual grounding & Plan/action based on updated state & ``What should X do now?''\\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\subsection*{D.2 Full Phase Map (DeepSeek Flash)}
+\begin{table}[h]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lccccc}
+\toprule
+Axis & n & $\mathcal{R}_T$ & $\mathcal{S}_T$ & $\mathcal{T}_T$ & Dominant\\
+\midrule
+Temporal access & 60 & $0.617$ & $0.433$ & $0.700$ & $\mathcal{T}_T$\\
+Conflict resolution & 60 & $0.817$ & $0.950$ & $0.967$ & $\mathcal{S}_T\approx\mathcal{T}_T$\\
+Entity composition & 60 & $0.533$ & $0.700$ & $0.650$ & $\mathcal{S}_T>\mathcal{T}_T$\\
+Epistemic uncertainty & 60 & $0.550$ & $1.000$ & $0.550$ & $\mathcal{S}_T$\\
+Counterfactual grounding & 60 & $0.900$ & $0.817$ & $1.000$ & $\mathcal{T}_T$\\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\subsection*{D.3 Cross-Regime Comparison}
+\begin{table}[h]
+\centering\footnotesize
+\begin{tabular}{lcccc}
+\toprule
+Operator & Structured & NL & Delta & Property\\
+\midrule
+$\mathcal{R}_T$ & $0.680$ & $0.683$ & $+0.003$ & Regime-invariant\\
+$\mathcal{S}_T$ & $0.500$ & $0.780$ & $+0.280$ & Compression\\
+$\mathcal{T}_T$ & $0.880$ & $0.773$ & $-0.107$ & Ordered-access\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The cross-regime comparison confirms regime-invariance ($\mathcal{R}_T$), compression ($\mathcal{S}_T$), and ordered-access ($\mathcal{T}_T$) properties.
+
+\section*{Appendix E: Experimental Setup and Reproducibility}
+\subsection*{E.1 Model Configuration}
+\begin{itemize}
+\item Backbone LLM: DeepSeek Flash (deepseek-chat resolving to deepseek-v4-flash)
+\item Temperature: $0.0$
+\item Max output tokens: 128 (answer), 16 (judge)
+\item API: OpenAI-compatible chat completions endpoint% [RESTORED FROM v17]
+\end{itemize}
+
+\subsection*{E.2 Retrieval Setup}
+\begin{itemize}
+\item Embedding model: all-MiniLM-L6-v2 (sentence-transformers), 384-dimension
+\item Top-K: 5 (MSFT), 5 (ATM-Bench), 3 to 5 (STALE)
+\item Chunking: per-message for MSFT; per-session document for STALE
+\end{itemize}
+
+\subsection*{E.3 State Module}
+\begin{itemize}
+\item Implementation: $B_t$ as dict mapping keys to belief entries \{value, timestamp, source, confidence, status\}
+\item Revision: confidence-thresholded $U$, replacing active belief when new confidence exceeds old confidence
+\item State readout: all active key-value pairs, query-independent
+\end{itemize}
+
+\subsection*{E.4 Trajectory Walk}
+\begin{itemize}
+\item Implementation: entity-scoped chronological walk of transition graph $G_T$
+\item Simple walk: $t=1$ to $t=n$, entity-filtered
+\item Constraint walk: $C_q$-scoped walk for multi\_path and temporal\_relationship patterns
+\end{itemize}
+
+\subsection*{E.5 Judge Protocol}
+\begin{itemize}
+\item Method: LLM-as-judge using DeepSeek Flash
+\item Ruling: binary CORRECT / INCORRECT
+\item MSFT-NL: structured judge comparing answer against ground-truth key-value
+\item ATM-Bench: binary judge with answer-keyword evaluation
+\item STALE (rule-based): keyword trigger detection for SR/PR/IPA
+\end{itemize}
+
+\subsection*{E.6 STALE Adapter Design}
+\begin{itemize}
+\item $\mathcal{R}_T$: session-level retrieval; each of 50 haystack sessions collapsed into a document; top-3 sessions retrieved
+\item $\mathcal{S}_T$: state extraction from M\_old/M\_new key evidence, confidence-thresholded revision
+\item $\mathcal{T}_T$: chronological walk of sessions identified by relevant\_session\_index
+\item Routing: dim1 $\rightarrow$ S\_T, dim2 $\rightarrow$ S\_T + premise check, dim3 $\rightarrow$ T\_T; T2 scenarios $\rightarrow$ T\_T for all dimensions
+\end{itemize}
+
+\subsection*{E.7 Cross-Model Validation (MSFT 112-case, Judge: DeepSeek Flash)}
+
+\begin{table}[h]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccc}
+\toprule
+Model & R\_T & S\_T & T\_T & Best Single\\
+\midrule
+DeepSeek Flash & $0.679$ & $0.384$ & $0.661$ & R\_T $0.679$\\
+DeepSeek V4 Pro & $0.839$ & $0.625$ & $0.786$ & R\_T $0.839$\\
+GPT-4o-mini & $0.741$ & $0.527$ & $0.812$ & T\_T $0.812$\\
+Claude Sonnet 4 & $0.795$ & $0.491$ & $0.830$ & T\_T $0.830$\\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+Key findings: $\mathcal{S}_T$ fails on 29/112 cases across all four models (past\_state 9/12, cross\_entity 7/16). Wrong answers are near-verbatim identical. Only 4/112 cases fail across all models for $\mathcal{R}_T$ and $\mathcal{T}_T$ respectively. Per-pattern best operator differs across models on 7/8 patterns; only past\_state universally selects $\mathcal{R}_T$:
+
+\begin{table}[h]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccc}
+\toprule
+Pattern & DS Flash & DS V4 Pro & GPT-4o-mini & Claude S4\\
+\midrule
+past\_state & $\mathcal{R}_T$ & $\mathcal{R}_T$ & $\mathcal{R}_T$ & $\mathcal{R}_T$\\
+temporal\_relationship & $\mathcal{T}_T$ & $\mathcal{T}_T$ & $\mathcal{R}_T$ & $\mathcal{R}_T$\\
+correction\_chain & $\mathcal{S}_T$ & $\mathcal{R}_T$ & $\mathcal{S}_T$ & $\mathcal{S}_T$\\
+cross\_entity & $\mathcal{T}_T$ & $\mathcal{R}_T$ & $\mathcal{T}_T$ & $\mathcal{T}_T$\\
+implicit\_conflict & $\mathcal{R}_T$ & $\mathcal{R}_T$ & $\mathcal{T}_T$ & $\mathcal{R}_T$\\
+multi\_path & $\mathcal{R}_T$ & $\mathcal{S}_T$ & $\mathcal{T}_T$ & $\mathcal{T}_T$\\
+negative\_evidence & $\mathcal{R}_T$ & $\mathcal{R}_T$ & $\mathcal{T}_T$ & $\mathcal{T}_T$\\
+ambiguous & $\mathcal{R}_T$ & $\mathcal{R}_T$ & $\mathcal{T}_T$ & $\mathcal{R}_T$\\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\section*{Appendix F: STALE Results}
+\subsection*{F.1 Full 400-Scenario Results (DeepSeek Flash, rule-based judge)}
+
+\begin{table}[h]
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lcccc}
+\toprule
+Type & SR & PR & IPA & Routing\\
+\midrule
+T1 (n=200) & $0.540$ & $1.000$ & $0.580$ & S\_T(dim1/2), T\_T(dim3)\\
+T2 (n=200) & $0.450$ & $0.880$ & $0.860$ & T\_T(all)\\
+\textbf{All (n=400)} & $\mathbf{0.495}$ & $\mathbf{0.940}$ & $\mathbf{0.720}$ & \textbf{Overall: 0.718}\\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\subsection*{F.2 Routing Derivation}% [RESTORED FROM v17]
+\label{sec:stale-routing}% [RESTORED FROM v17]
+Routing derived from MSFT-NL phase map~(\S\ref{sec:composition}): dim1 (State Resolution) maps to epistemic uncertainty $\rightarrow$ S\_T; dim2 (Premise Resistance) maps to conflict resolution $\rightarrow$ S\_T + premise verifier; dim3 (Implicit Policy Adaptation) maps to temporal access $\rightarrow$ T\_T; Type II propagated conflicts map to entity composition $\rightarrow$ T\_T for all dimensions.% [RESTORED FROM v17]
+
+\subsection*{F.3 Failure Taxonomy}% [RESTORED FROM v17: expanded from one-line summary]
+A 50-scenario diagnostic run reveals four failure categories:% [RESTORED FROM v17]
+\begin{itemize}% [RESTORED FROM v17]
+\item \textbf{Evaluation artifacts} ($\sim40\%$ of reported SR failures): semantically correct but keyword mismatch in the rule-based judge.% [RESTORED FROM v17]
+\item \textbf{Context insufficiency} ($\sim16\%$): 2-session trajectory insufficient to establish the required state resolution.% [RESTORED FROM v17]
+\item \textbf{Action-space grounding} ($\sim84\%$ of IPA failures): state update not mapped to action-space transformation.% [RESTORED FROM v17]
+\item \textbf{Dependency closure} (T2 PR=0.88): cross-key propagation chains pass undetected.% [RESTORED FROM v17]
+\end{itemize}% [RESTORED FROM v17]
+
+\subsection*{F.4 Comparison with CUPMem}% [RESTORED FROM v17]
+\begin{table}[h]% [RESTORED FROM v17]
+\centering% [RESTORED FROM v17]
+\footnotesize% [RESTORED FROM v17]
+\begin{tabular}{lcc}% [RESTORED FROM v17]
+\toprule% [RESTORED FROM v17]
+ & CUPMem (paper) & Our System\\% [RESTORED FROM v17]
+\midrule% [RESTORED FROM v17]
+Overall accuracy & $0.680$ & $0.718$\\% [RESTORED FROM v17]
+Backbone model & GPT-4o-mini & DeepSeek Flash\\% [RESTORED FROM v17]
+Judge & Gemini-3.1-flash-lite & Rule-based (keyword)\\% [RESTORED FROM v17]
+Inference calls & $\sim$100,000 (estimated) & 1,400\\% [RESTORED FROM v17]
+Architecture & Single augmented S\_T & Operator composition\\% [RESTORED FROM v17]
+\bottomrule% [RESTORED FROM v17]
+\end{tabular}% [RESTORED FROM v17]
+\end{table}% [RESTORED FROM v17]
+
+Direct comparison is confounded by backbone model differences and judge methodology. The structural claim---that composition gains follow from operator complementarity, not engineering quality---is independent of this number.% [RESTORED FROM v17]
+
+\section*{Appendix G: CUPMem Analysis}
+
+\subsection*{G.1 Source Code Verification}% [RESTORED FROM v17]
+The STALE benchmark codebase (\texttt{github.com/icedreamc/STALE}, MIT license) was independently reviewed. No hardcoded results; all accuracy computations use real LLM calls. CUPMem verified through sample runs.% [RESTORED FROM v17]
+
+\subsection*{G.2 CUPMem Architecture (from source)}% [RESTORED FROM v17]
+\paragraph{State Schema:} 10 buckets $\times$ approximately 30 tracks (identity, location, health, weather, routine, work, finance, family, preferences, focus). Tracks carry cardinality markers and causal link markers.% [RESTORED FROM v17]
+
+\paragraph{Write Pipeline:} session $\rightarrow$ chunker $\rightarrow$ delta\_extractor (LLM) $\rightarrow$ update\_resolver (LLM) $\rightarrow$ invalidation\_lanes (LLM bucket bridge plus latent proposal) $\rightarrow$ invalidation\_judge (LLM) $\rightarrow$ stale\_linker $\rightarrow$ writer.% [RESTORED FROM v17]
+
+\paragraph{Query Pipeline:} query $\rightarrow$ track\_hints $\rightarrow$ readout $\rightarrow$ premise\_verifier (LLM) $\rightarrow$ basis\_recovery $\rightarrow$ action\_grounding $\rightarrow$ answer. CUPMem's propagation is LLM-driven, not rule-based.% [RESTORED FROM v17]
+
+\subsection*{G.3 Relation to Our Framework}
+CUPMem is an augmented $\mathcal{S}_T$ with LLM-orchestrated propagation and premise blocking. It does not implement operator composition or routing; its contribution is at the representation layer.
+
+\section*{Appendix H: Supporting Observations}
+\subsection*{H.1 Multi-Trajectory}
+Four trajectories (T0--T3). $\mathcal{R}_T$ obsolete rate at step~9: $0.39\pm0.14$ (range $0.286$--$0.571$). $\mathcal{S}_T$: $0.00\pm0.00$.
+
+\subsection*{H.2 Conflict Hiding}
+Jaccard analysis: $3.25\times$ denominator inflation for corrective evidence. Co-visibility $=0.00$ makes conflict resolution at read-time structurally impossible.
+
+\subsection*{H.3 Bounded State}
+LLM extraction from unstructured text: $3.85\%$ vs.\ $19.23\%$ for flat retrieval ($5\times$ improvement).
+
+% ═══════════════════════════════════════
+\bibliographystyle{plain}
+\bibliography{pic_arxiv_refs}
+% ═══════════════════════════════════════
+
+\end{document}
