@@ -9,7 +9,88 @@ Oracle trajectory experiments on [ATM-Bench](https://arxiv.org/abs/2603.01990): 
 | `run_full1013.py` | §6.3 Scaling Limits (Table 3) · Appendix C.1/C.3 |
 | `run_hard31.py` | Appendix C.2 · §6.3 (Hard-31 reference) |
 
-The paper's narrative (§6.3, Appendix C): ATM-Bench provides 1013 QA over four years of personal multimodal memory. Operator-level analysis reveals distinct epistemic coverage regions. $\mathcal{T}_T$ uniquely covers 16.3%, $\mathcal{R}_T$ uniquely 3.4%, and 42.3% are uncovered by any operator — empirical evidence that the epistemic space exceeds the current three-operator projection basis. The trajectory advantage grows with task complexity: from +0.092 on single-evidence queries to +0.320 on queries requiring 4+ evidence items.
+---
+
+## Local Analysis Record
+
+These experiments were conducted in three phases (2026-05-21 ~ 05-22). The full audit trail is documented in `reports/E12_atm_oracle_trajectory_results.md` and `for_arxiv/LOG_ATM_BENCH.md`.
+
+### Experimental Progression
+
+| Phase | QA | Evidence format | Date |
+|:-----:|:--:|-----------------|:----:|
+| B.1 (pilot) | 50 | `short_summary` / `short_caption` | 05-21 |
+| B.2 (detail) | 50 | `detail[:1000]` / `caption[:1000]` | 05-21 |
+| **B.3 (full)** | **1013** | `detail[:1000]` / `caption[:1000]` | **05-22** |
+| Hard-31 | 31 | `detail[:1000]` / `caption[:1000]` | 05-22 |
+
+### Key Finding: Information Scaling Reversal
+
+Upgrading from short summaries to full detail revealed opposing responses:
+
+| System | Short (B.1) | Full detail (B.2) | Change |
+|--------|:-----------:|:-----------------:|:------:|
+| Retrieval | 34.0% | 24.0% | -10% (harmed) |
+| State | 24.0% | 14.0% | -10% (harmed) |
+| Trajectory | 42.0% | 52.0% | **+10%** (helped) |
+
+Richer evidence helps trajectory but hurts retrieval. The mechanism:
+
+- **Retrieval** operates over similarity rankings: longer text → lower similarity per token → evidence-in-top-5 drops from 76% to 60%
+- **Trajectory** bypasses embedding ranking (uses ground-truth evidence IDs): longer text → more specific numerical and contextual details → LLM can extract exact answers
+
+### Trajectory Bypasses Retrieval Bottleneck
+
+When evidence was **not** in top-5 retrieval window:
+
+| Condition | Accuracy |
+|-----------|:--------:|
+| R_T | 0.077 |
+| S_T | 0.051 |
+| **T_T** | **0.362** |
+
+Trajectory maintains 36% accuracy on questions where retrieval cannot find the evidence — it accesses memory through chronological ordering rather than similarity ranking.
+
+### Trajectory Advantage Scales with Evidence Count
+
+| Evidence items | n | R_T | T_T | Gap |
+|:-------------:|:--:|:---:|:---:|:---:|
+| 1 | 764 | 0.450 | 0.542 | +0.092 |
+| 2 | 148 | 0.236 | 0.405 | +0.169 |
+| 3 | 51 | 0.314 | 0.510 | +0.196 |
+| 4+ | 50 | 0.180 | 0.500 | **+0.320** |
+
+The gap widens monotonically with evidence count — structural advantage of temporal ordering over similarity search for multi-evidence reasoning.
+
+### Condition Overlap (1013 QA)
+
+| Pattern | Count | % |
+|---------|:----:|:--:|
+| All 3 correct | 143 | 14.1% |
+| T_T unique | 165 | **16.3%** |
+| R_T unique | 34 | 3.4% |
+| S_T unique | 6 | 0.6% |
+| None correct | 429 | **42.3%** |
+
+### Hard-31 Ceiling
+
+On the Hard subset (31 QA), all operators approach floor:
+
+| R_T | S_T | T_T |
+|:---:|:---:|:---:|
+| 0.032 | 0.065 | 0.194 |
+
+Evidence-in-top-5 rate drops to 0.548 (vs 0.616 for full 1013).
+
+### Data Provenance
+
+All results in this directory come from the **Oracle experiment** (`run_full1013.py` / `run_hard31.py`), which uses ground-truth evidence IDs for trajectory access. The earlier SGM experiment (`atm_sgm_experiment.py`) was conducted but excluded from the paper due to methodological concerns.
+
+### Known Reproducibility Constraints
+
+- All runs use DeepSeek Flash at temperature 0.0 — model version changes may shift absolute numbers
+- No random seed is set in the scripts (though operations are deterministic: argsort + temperature=0.0)
+- The ATM-Bench dataset (HuggingFace `Jingbiao/ATM-Bench`) is required; not included in this repo
 
 ---
 
