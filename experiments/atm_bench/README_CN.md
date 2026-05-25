@@ -120,6 +120,59 @@ T_T 在检索完全找不到证据时仍保持 36.2% 精度——通过时间顺
 
 ---
 
+## 数据溯源
+
+论文中每个数据点对应的具体文件和字段：
+
+### §6.3 Table 7（算子精度按题型分解）
+
+来源：`results/full1013_results.json`
+
+| 论文位置 | 数据来源 | 聚合方式 |
+|---------|---------|---------|
+| R_T 列 | `details[].fs_correct` | 全量 1013 条取均值 |
+| S_T 列 | `details[].state_correct` | 同上 |
+| T_T 列 | `details[].traj_correct` | 同上 |
+| Number 子列 | 过滤 `qtype=number`（来自 `atm-bench.json`） | 子集内取均值 |
+| List 子列 | 过滤 `qtype=list_recall` | 同上 |
+| Open 子列 | 过滤 `qtype=open_end` | 同上 |
+
+### §6.3 正文数值
+
+| 数据点 | 来源 | 计算方式 |
+|--------|------|---------|
+| T_T 唯一覆盖 16.3% | `full1013_results.json` | `traj_correct=True AND fs_correct=False AND state_correct=False` |
+| R_T 唯一覆盖 3.4% | 同上 | `fs_correct=True AND traj_correct=False AND state_correct=False` |
+| 全未覆盖 42.3% | 同上 | 三者皆 false |
+| 证据梯度 +0.092 ~ +0.320 | 同上 | 按 `len(evidence_ids)` 分组：1 / 2 / 3 / 4+ |
+
+### 附录 C.1（Projection Bottleneck）
+
+来源：`results/full1013_results.json`
+
+| 数据点 | 字段 | 条件 |
+|--------|------|------|
+| 证据在 top-5 内 | `details[].evidence_in_top5=True` | 子集内取 R_T / T_T 均值 |
+| 证据不在 top-5 内 | `details[].evidence_in_top5=False` | 同上 |
+| Overall | 全部 1013 条 | R_T=0.399, T_T=0.518 |
+
+### 附录 C.2（Hard-31）
+
+来源：`results/hard31_results.json`
+
+| 数据点 | 字段 |
+|--------|------|
+| R_T | `fs_accuracy` |
+| S_T | `state_accuracy` |
+| T_T | `trajectory_accuracy` |
+| 证据 top-5 命中率 | `evidence_in_top5_rate` |
+
+### 附录 C.3（Evidence Count Gradient）
+
+来源：`results/full1013_results.json`，按 `len(details[].evidence_ids)` 分组
+
+---
+
 ## 可复现说明
 
 ### 环境

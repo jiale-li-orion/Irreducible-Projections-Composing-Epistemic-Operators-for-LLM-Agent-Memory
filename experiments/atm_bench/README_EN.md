@@ -120,6 +120,59 @@ All operators approach floor, confirming this subset tests capabilities beyond s
 
 ---
 
+## Data Provenance
+
+Each data point in the paper maps to a specific file and field as follows:
+
+### §6.3 Table 7 (Operator Accuracy by Question Type)
+
+Source: `results/full1013_results.json`
+
+| Paper column | Data source | Aggregation |
+|-------------|-------------|-------------|
+| R_T column | `details[].fs_correct` | Mean over all 1013 entries |
+| S_T column | `details[].state_correct` | Same |
+| T_T column | `details[].traj_correct` | Same |
+| Number sub-column | Filter by `qtype=number` (from `atm-bench.json`) | Mean within subset |
+| List sub-column | Filter by `qtype=list_recall` | Same |
+| Open sub-column | Filter by `qtype=open_end` | Same |
+
+### §6.3 Body Text
+
+| Data point | Source | Computation |
+|-----------|--------|-------------|
+| T_T uniquely covers 16.3% | `full1013_results.json` | `traj_correct=True AND fs_correct=False AND state_correct=False` |
+| R_T uniquely 3.4% | Same | `fs_correct=True AND traj_correct=False AND state_correct=False` |
+| 42.3% uncovered | Same | All three false |
+| Evidence gradient +0.092 ~ +0.320 | Same | Grouped by `len(evidence_ids)`: 1 / 2 / 3 / 4+ |
+
+### Appendix C.1 (Projection Bottleneck)
+
+Source: `results/full1013_results.json`
+
+| Data point | Field | Condition |
+|-----------|-------|-----------|
+| Evidence in top-5 | `details[].evidence_in_top5=True` | Mean of R_T / T_T within subset |
+| Evidence NOT in top-5 | `details[].evidence_in_top5=False` | Same |
+| Overall | All 1013 entries | R_T=0.399, T_T=0.518 |
+
+### Appendix C.2 (Hard-31)
+
+Source: `results/hard31_results.json`
+
+| Data point | Field |
+|-----------|-------|
+| R_T | `fs_accuracy` |
+| S_T | `state_accuracy` |
+| T_T | `trajectory_accuracy` |
+| Evidence in top-5 rate | `evidence_in_top5_rate` |
+
+### Appendix C.3 (Evidence Count Gradient)
+
+Source: `results/full1013_results.json`, grouped by `len(details[].evidence_ids)`
+
+---
+
 ## Reproducibility
 
 ### Environment
