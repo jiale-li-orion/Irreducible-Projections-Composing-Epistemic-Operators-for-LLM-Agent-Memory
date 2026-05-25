@@ -1,0 +1,717 @@
+{
+  "metadata": {
+    "experiment": "cross_judge_hard31",
+    "orig_judge": "deepseek-flash",
+    "new_judge": "gpt-4o-mini",
+    "n_qa": 31,
+    "n_judgments": 93,
+    "elapsed_seconds": 221.6,
+    "agreement_rate": 0.957,
+    "timestamp": "2026-05-25T18:18:01.179614"
+  },
+  "agreement_rate": 0.957,
+  "n_disagree": 4,
+  "details": [
+    {
+      "qa_index": 0,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 0,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 0,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 1,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 1,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 1,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 2,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 2,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 2,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 3,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 3,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 3,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 4,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 4,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 4,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 5,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 5,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 5,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 6,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 6,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 6,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 7,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 7,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 7,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 8,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 8,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 8,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 9,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 9,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 9,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 10,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 10,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 10,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 11,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 11,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 11,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 12,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 12,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 12,
+      "operator": "T_T",
+      "orig_correct": true,
+      "new_correct": true,
+      "new_verdict": "CORRECT"
+    },
+    {
+      "qa_index": 13,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 13,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 13,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 14,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 14,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 14,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 15,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 15,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 15,
+      "operator": "T_T",
+      "orig_correct": true,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 16,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 16,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 16,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 17,
+      "operator": "R_T",
+      "orig_correct": true,
+      "new_correct": true,
+      "new_verdict": "CORRECT"
+    },
+    {
+      "qa_index": 17,
+      "operator": "S_T",
+      "orig_correct": true,
+      "new_correct": true,
+      "new_verdict": "CORRECT"
+    },
+    {
+      "qa_index": 17,
+      "operator": "T_T",
+      "orig_correct": true,
+      "new_correct": true,
+      "new_verdict": "CORRECT"
+    },
+    {
+      "qa_index": 18,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 18,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 18,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 19,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 19,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 19,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 20,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 20,
+      "operator": "S_T",
+      "orig_correct": true,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 20,
+      "operator": "T_T",
+      "orig_correct": true,
+      "new_correct": true,
+      "new_verdict": "CORRECT"
+    },
+    {
+      "qa_index": 21,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 21,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 21,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 22,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 22,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 22,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 23,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 23,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 23,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 24,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 24,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 24,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 25,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 25,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 25,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 26,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 26,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 26,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 27,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 27,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 27,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 28,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 28,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 28,
+      "operator": "T_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 29,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 29,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 29,
+      "operator": "T_T",
+      "orig_correct": true,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 30,
+      "operator": "R_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 30,
+      "operator": "S_T",
+      "orig_correct": false,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    },
+    {
+      "qa_index": 30,
+      "operator": "T_T",
+      "orig_correct": true,
+      "new_correct": false,
+      "new_verdict": "INCORRECT"
+    }
+  ],
+  "disagree_log": [
+    {
+      "qa_index": 15,
+      "operator": "T_T",
+      "question": "Today is July, 1 2025, Help me recall all the acadamic conference I went to in the past two years. (Leave out one-day seminars/workshops)",
+      "ground_truth": "NeurIPS 2023, UKIS 2024, ACL 2024, ECCV 2024, ECAI 2024, BMVC 2024, ROBOVIS 2025, WWW 2025",
+      "fs_answer": "I don't have enough information to answer.",
+      "state_answer": "I don't have enough information to answer.",
+      "traj_answer": "Based on the memory context, you attended NeurIPS 2023, UKIS 2024, ACL 2024, ECCV 2024, ECAI 2024, BMVC 2024, and ROBOVIS 2025.",
+      "deepseek_verdict": true,
+      "gpt4o_verdict": false,
+      "gpt4o_raw": "INCORRECT"
+    },
+    {
+      "qa_index": 20,
+      "operator": "S_T",
+      "question": "I recall visiting a dessert shop in Guangzhou on multiple occasions. The shop had an extensive menu, with several hundred items available. On what exact dates did I last visit this dessert shop? What is the name of the shop?",
+      "ground_truth": "The dessert shop is \u767e\u82b1\u4f20\u7edf\u751c\u54c1\u5e97.\nThe most recent visit dates were 27 March 2023 and 19 August 2024.",
+      "fs_answer": "Based on the memory context, the last visit to a dessert shop was on August 19, 2024, at the \"Baihua Traditional Dessert Shop.\"",
+      "state_answer": "Based on the memory context, the last visit to the dessert shop was on August 19, 2024, and the shop is called \"Baihua Traditional Dessert Shop.\"",
+      "traj_answer": "Based on the memory context, you visited the dessert shop on 2023-03-27 and 2024-08-19, and the shop is called \"Baihua Traditional Dessert Shop.\"",
+      "deepseek_verdict": true,
+      "gpt4o_verdict": false,
+      "gpt4o_raw": "INCORRECT"
+    },
+    {
+      "qa_index": 29,
+      "operator": "T_T",
+      "question": "I just returned from the first day of ECCV 2024. Help me gather all the interesting papers I discovered today and list their titles.",
+      "ground_truth": "Safe-CLIP removing NSFW Concepts from VLM,  Towards Surprising Video Comprehension, Learning Anomalies with Normality Prior for Unsupervised Video Anomaly Detection, 3x2: 3D Object Part Segmentation by 2D Semantic Correspondences, Camera Calibration using a Collimator System, DSMix: Distortion-Induced Sensitivity Map Based Pre-training for No-Reference Image Quality Assessment, EA-VTR: Event-Aware Video-Text Retrieval, PosterLlama: Bridging Design Ability of Language Model to Contents-Aware Layout Generation, CTRLorALTer: Conditional LoRAdapter for Efficient 0-Shot Control & Altering of T2I Models, PreciseControl: Enhancing Text-To-Image Diffusion Models with Fine-Grained Attribute Control, Efficient Pre-Training for Localized Instruction Generation of Videos, Commonly Interesting Images",
+      "fs_answer": "I don't have enough information to answer.",
+      "state_answer": "I don't have enough information to answer.",
+      "traj_answer": "Based on the memory context, the papers discovered at ECCV 2024 are: \"Safe-CLIP: Removing NSFW Concepts from Vision-and-Language Models,\" \"Learning Anomalies with Normality Prior for Unsupervised Video Anomaly Detection,\" \"Towards Surprising Video Comprehension,\" \"3x2: 3D Object Part Segmentation by 2D Semantic Correspondences,\" \"Camera Calibration using a Collimator System,\" \"DSMix: Distortion-Induced Sensitivity Map Based Pre-training for No-Reference Image Quality Assessment,\" \"EA-VTR: Event-Aware Video-Text Retrieval,\" \"Poster",
+      "deepseek_verdict": true,
+      "gpt4o_verdict": false,
+      "gpt4o_raw": "INCORRECT"
+    },
+    {
+      "qa_index": 30,
+      "operator": "T_T",
+      "question": "I remember Grace sitting with me during meals on several occasions, and I\u2019d like to make a collection of those moments. Which photos or videos captured that?",
+      "ground_truth": "20241116_174018, 20241116_174026, 20241017_140703, 20240926_131909, 20240628_105911",
+      "fs_answer": "I don't have enough information to answer.",
+      "state_answer": "I don't have enough information to answer.",
+      "traj_answer": "Based on the memory context, the photos from 2024-09-26, 2024-10-17, and 2024-11-16, as well as the video from 2024-11-16, capture Grace sitting with you during meals.",
+      "deepseek_verdict": true,
+      "gpt4o_verdict": false,
+      "gpt4o_raw": "INCORRECT"
+    }
+  ]
+}
