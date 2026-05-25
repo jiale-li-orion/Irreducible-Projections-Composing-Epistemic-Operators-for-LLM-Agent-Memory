@@ -18,7 +18,7 @@ from typing import Optional
 
 API_KEY = os.environ.get("DEEPSEEK_API_KEY", "")
 API_URL = "https://api.deepseek.com/v1/chat/completions"
-MODEL = "deepseek/deepseek-v4-flash"
+MODEL = "deepseek-v4-flash"
 MAX_RETRIES = 3
 RETRY_DELAY = 2  # seconds
 
@@ -96,7 +96,7 @@ def answer(query: str, context: str) -> Optional[str]:
         {"role": "system", "content": ANSWER_SYSTEM_PROMPT},
         {"role": "user", "content": f"Memory context:\n{context}\n\nQuestion: {query}\n\nAnswer:"},
     ]
-    return _call_api(messages, temperature=0.0, max_tokens=128)
+    return _call_api(messages, temperature=0.0, max_tokens=256)
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -123,7 +123,7 @@ def judge(question: str, system_answer: str, ground_truth: str) -> tuple[bool, s
         {"role": "system", "content": JUDGE_SYSTEM_PROMPT},
         {"role": "user", "content": f"Question: {question}\nGround truth: {ground_truth}\nSystem answer: {system_answer}\n\nVerdict:"},
     ]
-    raw = _call_api(messages, temperature=0.0, max_tokens=16)
+    raw = _call_api(messages, temperature=0.0, max_tokens=256)
     if raw is None:
         return False, "API_ERROR"
 
