@@ -13,6 +13,9 @@
 *.synctex.gz
 *.xdv
 
+# Experiment checkpoints (auto-generated during runs)
+experiments/*/checkpoints/
+
 # OS
 .DS_Store
 Thumbs.db

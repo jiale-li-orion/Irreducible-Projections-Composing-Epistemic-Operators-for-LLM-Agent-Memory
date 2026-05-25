@@ -1,0 +1,657 @@
+{
+  "metadata": {
+    "experiment_phase": "B.3 - oracle trajectory hard 31 QA (full detail/caption)",
+    "script": "atm_hard31_experiment.py",
+    "timestamp": "2026-05-22T07:42:30.965858",
+    "llm_model": "deepseek-chat",
+    "llm_temperature": 0.0,
+    "embedding_model": "all-MiniLM-L6-v2",
+    "top_k": 5,
+    "n_qa": 31,
+    "qa_source": "atm-bench-hard.json (31 QA)",
+    "evidence_field_email": "detail[:1000]",
+    "evidence_field_media": "caption[:1000]",
+    "trajectory_format": "chronologically sorted evidence with step indices",
+    "system_prompt_snippet": "You are an agent answering questions based on your memory context.\nRules:\n1. Answer ONLY based on the provided memory context.\n2. If the context contains contradictory information, use the most recent",
+    "total_elapsed_seconds": 178.919394
+  },
+  "n_qa": 31,
+  "fs_accuracy": 0.0323,
+  "state_accuracy": 0.0645,
+  "trajectory_accuracy": 0.1935,
+  "evidence_in_top5_rate": 0.5484,
+  "usage": {
+    "calls": 186,
+    "total_tokens": 106526
+  },
+  "details": [
+    {
+      "qa_index": 0,
+      "question": "I really like the steel bridge in Porto. Can you help me find all the images and videos I took during my visit?",
+      "ground_truth": "20250225_173637, 20250223_132602, 20250223_130249, 20250225_141559, 20250225_141720, 20250225_142539, 20250225_150659, 20250225_184511",
+      "fs_answer": "Based on the memory context, I found a video from February 23, 2025, showing the Ribeira Bridge, and a photo from February 25, 2025, showing the Dom Lu\u00eds I Bridge.",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "Based on the memory context, I found images and videos of the steel bridge in Porto, specifically the Dom Lu\u00eds I Bridge and Ponte de S\u00e3o Jo\u00e3o, captured on February 23 and 25, 2025, including photos at 13:02, 14:17, 14:25, 15:07, 17:36, and 18:45, and videos at 13:26 and 14:16.",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20250223_130249",
+        "20250223_132602",
+        "20250225_141559",
+        "20250225_141720",
+        "20250225_142539",
+        "20250225_150659",
+        "20250225_173637",
+        "20250225_184511"
+      ],
+      "evidence_in_top5": true
+    },
+    {
+      "qa_index": 1,
+      "question": "How much did I pay for the second hotel in my recent trip to Portugal?",
+      "ground_truth": "434.97",
+      "fs_answer": "I don't have enough information to answer.",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "I don't have enough information to answer.",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20250310_202208",
+        "email202502200013"
+      ],
+      "evidence_in_top5": true
+    },
+    {
+      "qa_index": 2,
+      "question": "During my NeurIPS 2023 North America trip (prior to returning home), list all cities I visited along with the specific dates associated with each location, and provide the total number of cities visited.",
+      "ground_truth": "During your NeurIPS 2023 North America trip (before returning home on 2024-01-01), you visited 5 cities in total: Houston (layovers on 2023-12-09 and 2023-12-15), New Orleans (2023-12-09 to 2023-12-15), Boston (2023-12-15 to 2023-12-19), Cambridge, MA (2023-12-15 to 2023-12-19), and Toronto (2023-12-19 to 2023-12-31).",
+      "fs_answer": "I don't have enough information to answer.",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "Based on the memory context, you visited London on December 9, 2023; Kenner, Louisiana on December 15, 2023; Houston, Texas on December 15, 2023; and Toronto on December 31, 2023, for a total of 4 cities.",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20231209_122643",
+        "20231209_220616",
+        "20231215_141752",
+        "20231215_162852",
+        "20231215_214053",
+        "20231215_224448",
+        "20231219_103304",
+        "20231219_144134",
+        "20231231_234005",
+        "20240131_155737"
+      ],
+      "evidence_in_top5": false
+    },
+    {
+      "qa_index": 3,
+      "question": "How many days have I stayed in France from 2024 to 2025?",
+      "ground_truth": "10 days",
+      "fs_answer": "I don't have enough information to answer.",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "I don't have enough information to answer.",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20240708_170032",
+        "20240713_224255",
+        "20250208_125156",
+        "email202502020001",
+        "email202502040001"
+      ],
+      "evidence_in_top5": true
+    },
+    {
+      "qa_index": 4,
+      "question": "How much did I pay for my hotel during my recent trip to Portugal?",
+      "ground_truth": "\u20ac842.97",
+      "fs_answer": "I don't have enough information to answer.",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "Based on the memory context, you paid 408.00 EUR for your stay at Cenica Porto Hotel and 445.26 EUR for your stay at Hilton Porto Gaia.",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20250310_202208",
+        "email202502110008",
+        "email202502200013"
+      ],
+      "evidence_in_top5": true
+    },
+    {
+      "qa_index": 5,
+      "question": "Help me recall the image ids from Teayan Yuese (\u8336\u989c\u60a6\u8272) during my visit to Changsha.",
+      "ground_truth": "20230403_114939, 20230403_114911, 20230401_115135",
+      "fs_answer": "I don't have enough information to answer.",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "Based on the memory context, the image from Teayan Yuese (\u8336\u989c\u60a6\u8272) during your visit to Changsha is from Step 2 on 2023-04-03 at 11:49:11.",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20230401_115135",
+        "20230403_114911",
+        "20230403_114939"
+      ],
+      "evidence_in_top5": false
+    },
+    {
+      "qa_index": 6,
+      "question": "I remember attending a talk on LLM inference, discussing compute-bound and memory-bound during NeurIPS conference. Recall the media ids of the slides.",
+      "ground_truth": "20231210_123349, 20231210_124112, 20231210_124201, 20231210_124255,\n20231210_124635, 20231210_124834, 20231210_125002, 20231210_125339,\n20231210_125556, 20231210_125641, 20231210_125807, 20231210_125832,\n20231210_130147, 20231210_131358.",
+      "fs_answer": "I don't have enough information to answer.",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "Based on the memory context, the media IDs of the slides are: Step 1, Step 2, Step 3, Step 4, Step 5, Step 6, Step 7, Step 8, Step 9, Step 10, Step 11, Step 12, Step 13, and Step 14.",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20231210_123349",
+        "20231210_124112",
+        "20231210_124201",
+        "20231210_124255",
+        "20231210_124635",
+        "20231210_124834",
+        "20231210_125002",
+        "20231210_125339",
+        "20231210_125556",
+        "20231210_125641",
+        "20231210_125807",
+        "20231210_125832",
+        "20231210_130147",
+        "20231210_131358"
+      ],
+      "evidence_in_top5": true
+    },
+    {
+      "qa_index": 7,
+      "question": "How many nights have I stayed in Glasgow during my visits, and in which specific years did those stays occur?",
+      "ground_truth": "6 nights in total. 1 night in 2022, 5 nights in 2024.",
+      "fs_answer": "I don't have enough information to answer.",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "I don't have enough information to answer.",
+      "traj_correct": false,
+      "evidence_ids": [
+        "email202206120004",
+        "email202410130002",
+        "email202411160004",
+        "email202411160005",
+        "email202411180007"
+      ],
+      "evidence_in_top5": true
+    },
+    {
+      "qa_index": 8,
+      "question": "During my NeurIPS 2023 trip, I travelled for a period of time. What were the start and end dates of the trip, and what was the total duration from departure until returning home?",
+      "ground_truth": "You departed on 9 December 2023 and returned on 1 January 2024, making the total duration of your NeurIPS 2023 trip 24 days (inclusive).",
+      "fs_answer": "I don't have enough information to answer.",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "I don't have enough information to answer.",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20231209_124050",
+        "20231231_234005",
+        "20240131_155737",
+        "email202311180004"
+      ],
+      "evidence_in_top5": false
+    },
+    {
+      "qa_index": 9,
+      "question": "I remember several moments when Grace was hiding in strange places, or being sneaky and peeking at me with her body partially hidden. I\u2019d like to make a collection of those moments. Which photos or videos captured that?",
+      "ground_truth": "20250509_232753, 20250509_232802, 20250509_232737, 20250221_002518, 20250221_002514, 20250119_000631, 20241117_115411, 20241117_115422, 20241004_213143, 20240715_125140, 20240715_125144, 20250511_120224, 20250606_231452",
+      "fs_answer": "I don't have enough information to answer.",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "Based on the memory context, the moments where Grace is hiding or peeking with her body partially hidden are: Step 1 (video under the bed), Step 2 (photo under the bed), Step 4 (photo under a bedside table), Step 6 (photo under a bed), Step 7 (photo behind a door frame), Step 8 (photo behind a doorframe), Step 10 (photo on a bedside table), and Step 11 (photo behind a bedside table).",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20240715_125140",
+        "20240715_125144",
+        "20241004_213143",
+        "20241117_115411",
+        "20241117_115422",
+        "20250119_000631",
+        "20250221_002514",
+        "20250221_002518",
+        "20250509_232737",
+        "20250509_232753",
+        "20250509_232802",
+        "20250511_120224",
+        "20250606_231452"
+      ],
+      "evidence_in_top5": false
+    },
+    {
+      "qa_index": 10,
+      "question": "I remember a day when I was walking outside and the weather suddenly became very bad, with heavy hail. Can you help me recall the slow-motion videos I took that day? Report the video ID.",
+      "ground_truth": "20230307_161006",
+      "fs_answer": "I don't have enough information to answer.",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "I don't have enough information to answer.",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20230307_150257",
+        "20230307_155858",
+        "20230307_155907",
+        "20230307_161006",
+        "20230307_161017",
+        "20230307_161038"
+      ],
+      "evidence_in_top5": true
+    },
+    {
+      "qa_index": 11,
+      "question": "Which hotels have I stayed at in Glasgow, and on what dates?",
+      "ground_truth": "Z Hotel Glasgow: June 23\u201324, 2022\n\nDoubleTree by Hilton Glasgow Central: November 23\u201324, 2024\n\nHilton Glasgow: November 24\u201328, 2024",
+      "fs_answer": "Based on the memory context, you stayed at The Z Hotel Glasgow on June 23-24, 2022, and had a reservation at Hilton Glasgow from November 24 to November 28, 2024, which was later cancelled.",
+      "fs_correct": false,
+      "state_answer": "Based on the memory context, you had a reservation at Hilton Glasgow from November 24 to November 28, 2024, but it was cancelled, and you stayed at The Z Hotel Glasgow on June 23-24, 2022.",
+      "state_correct": false,
+      "traj_answer": "Based on the memory context, you stayed at The Z Hotel Glasgow on June 23-24, 2022, and had a reservation at Hilton Glasgow from November 24 to 28, 2024, which was later cancelled, and a new reservation at DoubleTree by Hilton Glasgow Central for November 23, 2024.",
+      "traj_correct": false,
+      "evidence_ids": [
+        "email202206120004",
+        "email202410130002",
+        "email202411160004",
+        "email202411160005",
+        "email202411180007"
+      ],
+      "evidence_in_top5": true
+    },
+    {
+      "qa_index": 12,
+      "question": "How much did I spend on dental care in 2022?",
+      "ground_truth": "\u00a3190",
+      "fs_answer": "Based on the memory context, you spent \u00a370.00 on September 23, 2022, and \u00a350.00 on September 6, 2022, totaling \u00a3120.00.",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "Based on the memory context, you spent \u00a350.00 on September 6, \u00a370.00 on September 16, and \u00a370.00 on September 23, totaling \u00a3190.00 on dental care in 2022.",
+      "traj_correct": true,
+      "evidence_ids": [
+        "20220906_134413",
+        "20220916_154434",
+        "20220924_194144"
+      ],
+      "evidence_in_top5": true
+    },
+    {
+      "qa_index": 13,
+      "question": "Can you help me recall the photos I took during my lunch at Fancett?",
+      "ground_truth": "20250221_133131, 20250221_135227, 20250221_142725",
+      "fs_answer": "I don't have enough information to answer.",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "Based on the memory context, you took photos at Pure Living on Mill Road in Petersfield, not at Fancett's, so I don't have enough information to answer.",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20250221_133131",
+        "20250221_135227",
+        "20250221_142725",
+        "email202502110016",
+        "email202502190009"
+      ],
+      "evidence_in_top5": false
+    },
+    {
+      "qa_index": 14,
+      "question": "I remember visiting a dessert shop in Guangzhou multiple times. The shop had several hundred items on its menu. Please retrieve all photos taken during those visits.",
+      "ground_truth": "20230327_205909, 20230327_210005, 20240819_205823, 20240819_205827, 20240819_210159",
+      "fs_answer": "I don't have enough information to answer.",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "Based on the memory context, the photos taken during visits to a dessert shop in Guangzhou are: [Photo 2024-08-19 20:58:24], [Photo 2024-08-19 20:58:27], and [Photo 2024-08-19 21:02:00].",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20230327_205909",
+        "20230327_210005",
+        "20240819_205823",
+        "20240819_205827",
+        "20240819_210159"
+      ],
+      "evidence_in_top5": true
+    },
+    {
+      "qa_index": 15,
+      "question": "Today is July, 1 2025, Help me recall all the acadamic conference I went to in the past two years. (Leave out one-day seminars/workshops)",
+      "ground_truth": "NeurIPS 2023, UKIS 2024, ACL 2024, ECCV 2024, ECAI 2024, BMVC 2024, ROBOVIS 2025, WWW 2025",
+      "fs_answer": "I don't have enough information to answer.",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "Based on the memory context, you attended NeurIPS 2023, UKIS 2024, ACL 2024, ECCV 2024, ECAI 2024, BMVC 2024, and ROBOVIS 2025.",
+      "traj_correct": true,
+      "evidence_ids": [
+        "20231210_111815",
+        "20240701_120945",
+        "20240811_150248",
+        "20240930_132654",
+        "20241021_153837",
+        "20241127_193516",
+        "20250223_100830",
+        "20250428_114056"
+      ],
+      "evidence_in_top5": false
+    },
+    {
+      "qa_index": 16,
+      "question": "How many times have I visited Newcastle?",
+      "ground_truth": "Only one time.",
+      "fs_answer": "I don't have enough information to answer.",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "I don't have enough information to answer.",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20220619_130516",
+        "20230903_174239"
+      ],
+      "evidence_in_top5": false
+    },
+    {
+      "qa_index": 17,
+      "question": "Which Portuguese restaurant did I really like during my visit, and why?",
+      "ground_truth": "Abadia do Porto, you went there twice during your visit.",
+      "fs_answer": "Based on the memory context, you really liked Abadia do Porto, because it offered a feast of Portuguese culinary art in an intimate and convivial atmosphere in the historic heart of the city.",
+      "fs_correct": true,
+      "state_answer": "Based on the memory context, you really liked Abadia do Porto, as it is described as a place where tradition meets vibrant energy in the Porto City Centre.",
+      "state_correct": true,
+      "traj_answer": "Based on the memory context, you really liked Abadia do Porto, because it offered a feast of Portuguese culinary art in a warm, intimate atmosphere in the historic city center.",
+      "traj_correct": true,
+      "evidence_ids": [
+        "20250222_192936",
+        "20250222_195034",
+        "20250227_194636"
+      ],
+      "evidence_in_top5": true
+    },
+    {
+      "qa_index": 18,
+      "question": "After I arrived in Santiago, I wasn't able to get an Uber. Then, I queued for taxi for quite a while, how long did I wait before finally getting a taxi?",
+      "ground_truth": "About 1 hour.",
+      "fs_answer": "I don't have enough information to answer.",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "I don't have enough information to answer.",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20241020_191605",
+        "20241021_010743"
+      ],
+      "evidence_in_top5": false
+    },
+    {
+      "qa_index": 19,
+      "question": "Which hotels did I stay at in Greater Cairo during my most recent visit?",
+      "ground_truth": "Novotel Cairo Airport, Conrad Cairo and Hilton Pyramids Golf",
+      "fs_answer": "Based on the context, you stayed at the Sofitel Cairo and the Conrad Cairo.",
+      "fs_correct": false,
+      "state_answer": "Based on the context, you stayed at the Conrad Cairo on July 30, 2024, and the Sofitel Cairo on July 30 and 31, 2024.",
+      "state_correct": false,
+      "traj_answer": "Based on the memory context, you stayed at the Novotel Cairo Airport and the Sofitel Cairo.",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20240730_024914",
+        "20240730_203024",
+        "20240731_102216",
+        "20240805_193244"
+      ],
+      "evidence_in_top5": false
+    },
+    {
+      "qa_index": 20,
+      "question": "I recall visiting a dessert shop in Guangzhou on multiple occasions. The shop had an extensive menu, with several hundred items available. On what exact dates did I last visit this dessert shop? What is the name of the shop?",
+      "ground_truth": "The dessert shop is \u767e\u82b1\u4f20\u7edf\u751c\u54c1\u5e97.\nThe most recent visit dates were 27 March 2023 and 19 August 2024.",
+      "fs_answer": "Based on the memory context, the last visit to a dessert shop was on August 19, 2024, at the \"Baihua Traditional Dessert Shop.\"",
+      "fs_correct": false,
+      "state_answer": "Based on the memory context, the last visit to the dessert shop was on August 19, 2024, and the shop is called \"Baihua Traditional Dessert Shop.\"",
+      "state_correct": true,
+      "traj_answer": "Based on the memory context, you visited the dessert shop on 2023-03-27 and 2024-08-19, and the shop is called \"Baihua Traditional Dessert Shop.\"",
+      "traj_correct": true,
+      "evidence_ids": [
+        "20230327_205909",
+        "20230327_210005",
+        "20240819_205823"
+      ],
+      "evidence_in_top5": true
+    },
+    {
+      "qa_index": 21,
+      "question": "Can you help me recall all the photos I took during meals on my trip to Cornwall?",
+      "ground_truth": "20230416_114842, 20230416_191938, 20230416_191943,\n20230417_133726, 20230418_121232, 20230418_184523,\n20230419_130151, 20230419_130159, 20230419_134456,\n20230419_194245, 20230419_195920, 20230419_200149,\n20230419_200211, 20230419_200232, 20230419_200302,\n20230419_200441, 20230419_200455.",
+      "fs_answer": "Based on the memory context, photos taken during meals on your trip to Cornwall include: a steak and club sandwich at Cornish Deli on April 18, 2023; fish and chips at Back Road West in St. Ives on April 16, 2023; and two drinks at Tretho Lounge in St. Ives on April 19, 2023.",
+      "fs_correct": false,
+      "state_answer": "Based on the context, I recall photos from meals in Cornwall on April 16, 18, and 19, 2023.",
+      "state_correct": false,
+      "traj_answer": "Based on the memory context, you took photos of meals on April 16, 17, 18, and 19, 2023, at various locations in St. Ives and Newlyn, Cornwall.",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20230416_114842",
+        "20230416_191938",
+        "20230416_191943",
+        "20230417_133726",
+        "20230418_121232",
+        "20230418_184523",
+        "20230419_130151",
+        "20230419_130159",
+        "20230419_134456",
+        "20230419_194245",
+        "20230419_195920",
+        "20230419_200149",
+        "20230419_200211",
+        "20230419_200232",
+        "20230419_200302",
+        "20230419_200441",
+        "20230419_200455"
+      ],
+      "evidence_in_top5": true
+    },
+    {
+      "qa_index": 22,
+      "question": "I am reimbursing my ECAI 2024 trip. What was the total cost of my taxi rides during the trip?",
+      "ground_truth": "\u20ac62.8",
+      "fs_answer": "I don't have enough information to answer.",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "Based on the memory context, the total cost of your taxi rides was 32.50 EUR (23.00 EUR + 9.50 EUR).",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20241021_010743",
+        "20241021_161431",
+        "20241022_103832",
+        "20241022_162859",
+        "20241023_105515"
+      ],
+      "evidence_in_top5": false
+    },
+    {
+      "qa_index": 23,
+      "question": "Can you help me find all the memory pieces related to St Michael\u2019s Mount? Report the ids.",
+      "ground_truth": "20230418_135743, 20230418_135752, 20230418_135850, 20230418_195315, 20230418_195319, 20230418_195350, 20230418_135852.",
+      "fs_answer": "The memory pieces related to St Michael\u2019s Mount are: Photo 2023-04-18 13:57:53, Photo 2023-04-18 13:57:43, and Video 2023-04-18 12:58:57+00:00.",
+      "fs_correct": false,
+      "state_answer": "20230418_135752, 20230418_135743, 20230418_135852",
+      "state_correct": false,
+      "traj_answer": "All memory pieces (Step 1 through Step 7) are related to St Michael\u2019s Mount.",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20230418_135743",
+        "20230418_135752",
+        "20230418_135850",
+        "20230418_135852",
+        "20230418_195315",
+        "20230418_195319",
+        "20230418_195350"
+      ],
+      "evidence_in_top5": true
+    },
+    {
+      "qa_index": 24,
+      "question": "Which European countries have I visted?",
+      "ground_truth": "United Kingdom, Spain, Portugal, Hungary, France, Italy.",
+      "fs_answer": "I don't have enough information to answer.",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "I don't have enough information to answer.",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20220917_134113",
+        "20240930_180605",
+        "20241021_134620",
+        "20250208_123453",
+        "20250223_132602",
+        "20250407_201317"
+      ],
+      "evidence_in_top5": false
+    },
+    {
+      "qa_index": 25,
+      "question": "Help me recall all of my sheep related photo ids in Newcastle.",
+      "ground_truth": "20230905_144627, 20230905_152531, 20230906_155344, 20230906_121455, 20230906_121206, 20230905_153627, 20230905_153314, 20230905_152605",
+      "fs_answer": "Based on the context, the sheep-related photo IDs in Newcastle are [Photo 2023-09-05 15:26:05] and [Photo 2023-09-06 12:12:06].",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "Based on the memory context, the sheep-related photo IDs are: Step 2 (2023-09-05 15:25:32), Step 3 (2023-09-05 15:26:05), and Step 6 (2023-09-06 12:12:06).",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20230905_144627",
+        "20230905_152531",
+        "20230905_152605",
+        "20230905_153314",
+        "20230905_153627",
+        "20230906_121206",
+        "20230906_121455",
+        "20230906_155344"
+      ],
+      "evidence_in_top5": true
+    },
+    {
+      "qa_index": 26,
+      "question": "Today is June 1, 2025. I\u2019ve enjoyed collecting conference badges over the past two years. Can you help me recall all the photos of my badges from that period? Show me the image ids.",
+      "ground_truth": "20231210_111815, 20240701_120945, 20240811_150248, 20240930_132654, 20250428_114056, 20250428_114126, 20241003_184216",
+      "fs_answer": "I don't have enough information to answer.",
+      "fs_correct": false,
+      "state_answer": "Based on the memory context, the photo IDs of your badges from the past two years (June 2023 to June 2025) are: 20241003_184216 and 20250428_114126.",
+      "state_correct": false,
+      "traj_answer": "Based on the memory context, the photos of conference badges from the past two years (June 1, 2023 to June 1, 2025) are: Step 1 (NeurIPS 2023), Step 2 (UKIS 2024), Step 3 (ACL 2024), Step 4 (ECCV 2024), Step 5 (ECCV 2024), Step 6 (Web2025), and Step 7 (The Web Conference 2025).",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20231210_111815",
+        "20240701_120945",
+        "20240811_150248",
+        "20240930_132654",
+        "20241003_184216",
+        "20250428_114056",
+        "20250428_114126"
+      ],
+      "evidence_in_top5": true
+    },
+    {
+      "qa_index": 27,
+      "question": "Which cities have I visited in France?",
+      "ground_truth": "Marseille, Apt, Pertuis, La Seyne-sur-Mer, Cassis, Toulon, Aubagne, Marignane, Istres, Paris",
+      "fs_answer": "Based on the memory context, you have visited Paris, France.",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "Based on the memory context, you have visited Marseille, Puyvert, Saint-Martin, Cassis, La Seyne-sur-Mer, Aubagne, and Marignane in France.",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20240708_170032",
+        "20240711_121848",
+        "20240711_125806",
+        "20240712_101712",
+        "20240712_142629",
+        "20240713_144451",
+        "20240713_192657",
+        "20240713_193044",
+        "20240713_224255",
+        "20250208_125156"
+      ],
+      "evidence_in_top5": false
+    },
+    {
+      "qa_index": 28,
+      "question": "During my recent trip to Egypt, I remember staying at some Sofitel-branded hotels and having a very good experience. Could you remind me which hotels these were?\nI also recall taking a nice timelapse at one of the hotels, could you help me identify which hotel it was taken at and the ID of that timelapse?",
+      "ground_truth": "The Sofitel hotels you stayed at were Sofitel Winter Palace Luxor and Sofitel Legend Old Cataract Aswan.\nThe timelapse was taken at Sofitel Winter Palace Luxor, and the ID of the timelapse is 20240801_201540.",
+      "fs_answer": "Based on the memory context, you stayed at the Sofitel Legend Old Cataract Aswan Hotel and the Sofitel Cairo. The timelapse was taken at the Sofitel Cairo, and its ID is [Video 2024-08-02 16:30:43+00:00].",
+      "fs_correct": false,
+      "state_answer": "Based on the memory context, you stayed at the Sofitel Legend Old Cataract Aswan Hotel. The timelapse was taken at this hotel, with the ID 20240802_193038.",
+      "state_correct": false,
+      "traj_answer": "Based on the memory context, you stayed at the Sofitel Legend Winter Palace Hotel in Luxor and the Sofitel Legend Old Cataract Aswan Hotel; the timelapse was taken at the Sofitel Legend Winter Palace Hotel in Luxor with the ID \"Video 2024-08-01 10:10:52+00:00\".",
+      "traj_correct": false,
+      "evidence_ids": [
+        "20240731_155548",
+        "20240801_201540",
+        "20240802_182133"
+      ],
+      "evidence_in_top5": false
+    },
+    {
+      "qa_index": 29,
+      "question": "I just returned from the first day of ECCV 2024. Help me gather all the interesting papers I discovered today and list their titles.",
+      "ground_truth": "Safe-CLIP removing NSFW Concepts from VLM,  Towards Surprising Video Comprehension, Learning Anomalies with Normality Prior for Unsupervised Video Anomaly Detection, 3x2: 3D Object Part Segmentation by 2D Semantic Correspondences, Camera Calibration using a Collimator System, DSMix: Distortion-Induced Sensitivity Map Based Pre-training for No-Reference Image Quality Assessment, EA-VTR: Event-Aware Video-Text Retrieval, PosterLlama: Bridging Design Ability of Language Model to Contents-Aware Layout Generation, CTRLorALTer: Conditional LoRAdapter for Efficient 0-Shot Control & Altering of T2I Models, PreciseControl: Enhancing Text-To-Image Diffusion Models with Fine-Grained Attribute Control, Efficient Pre-Training for Localized Instruction Generation of Videos, Commonly Interesting Images",
+      "fs_answer": "I don't have enough information to answer.",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "Based on the memory context, the papers discovered at ECCV 2024 are: \"Safe-CLIP: Removing NSFW Concepts from Vision-and-Language Models,\" \"Learning Anomalies with Normality Prior for Unsupervised Video Anomaly Detection,\" \"Towards Surprising Video Comprehension,\" \"3x2: 3D Object Part Segmentation by 2D Semantic Correspondences,\" \"Camera Calibration using a Collimator System,\" \"DSMix: Distortion-Induced Sensitivity Map Based Pre-training for No-Reference Image Quality Assessment,\" \"EA-VTR: Event-Aware Video-Text Retrieval,\" \"Poster",
+      "traj_correct": true,
+      "evidence_ids": [
+        "20241001_171053",
+        "20241001_173039",
+        "20241001_174058",
+        "20241001_175310",
+        "20241001_180247",
+        "20241001_181259",
+        "20241001_182544",
+        "20241001_183401",
+        "20241001_184112",
+        "20241001_184155",
+        "20241001_184633",
+        "20241001_184746"
+      ],
+      "evidence_in_top5": true
+    },
+    {
+      "qa_index": 30,
+      "question": "I remember Grace sitting with me during meals on several occasions, and I\u2019d like to make a collection of those moments. Which photos or videos captured that?",
+      "ground_truth": "20241116_174018, 20241116_174026, 20241017_140703, 20240926_131909, 20240628_105911",
+      "fs_answer": "I don't have enough information to answer.",
+      "fs_correct": false,
+      "state_answer": "I don't have enough information to answer.",
+      "state_correct": false,
+      "traj_answer": "Based on the memory context, the photos from 2024-09-26, 2024-10-17, and 2024-11-16, as well as the video from 2024-11-16, capture Grace sitting with you during meals.",
+      "traj_correct": true,
+      "evidence_ids": [
+        "20240628_105911",
+        "20240926_131909",
+        "20241017_140703",
+        "20241116_174018",
+        "20241116_174026",
+        "email202304120007"
+      ],
+      "evidence_in_top5": false
+    }
+  ]
+}
