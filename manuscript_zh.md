@@ -422,7 +422,7 @@ MSFT-NL基准通过模板参数化，跨5个认知轴生成300个自然语言案
 
 ### E.1 模型配置
 
-- 基座LLM：DeepSeek Flash（deepseek-chat 解析为 deepseek-v4-flash）
+- 基座LLM：DeepSeek Flash（deepseek/deepseek-v4-flash）
 - 温度：0.0
 - 最大输出令牌数：128（答案），16（裁判）
 - API：OpenAI兼容聊天补全端点

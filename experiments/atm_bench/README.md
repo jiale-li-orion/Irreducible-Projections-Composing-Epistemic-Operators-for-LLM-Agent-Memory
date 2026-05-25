@@ -71,7 +71,7 @@ Both scripts auto-save checkpoints every 50 (or 10) QA and resume if interrupted
 
 ## Notes
 
-- All runs use DeepSeek Flash (deepseek-v4-flash) at temperature 0.0
+- All runs use DeepSeek Flash (`deepseek/deepseek-v4-flash`) at temperature 0.0
 - Judge is the same LLM with a binary CORRECT/INCORRECT prompt
 - `T_T` uses oracle trajectory access (ground-truth evidence IDs + chronological ordering)
 - `S_T` on this benchmark is a Retrieval+KV variant (unstructured evidence prevents true state projection)

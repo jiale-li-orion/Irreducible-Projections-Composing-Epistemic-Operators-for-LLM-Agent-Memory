@@ -434,7 +434,7 @@ The MSFT-NL benchmark generates 300 natural language cases across 5 epistemic ax
 *Configuration details referenced throughout §4-6.*
 
 ### E.1 Model Configuration
-- Backbone LLM: DeepSeek Flash (deepseek-chat resolving to deepseek-v4-flash)
+- Backbone LLM: DeepSeek Flash (deepseek/deepseek-v4-flash)
 - Temperature: 0.0
 - Max output tokens: 128 (answer), 16 (judge)
 - API: OpenAI-compatible chat completions endpoint
