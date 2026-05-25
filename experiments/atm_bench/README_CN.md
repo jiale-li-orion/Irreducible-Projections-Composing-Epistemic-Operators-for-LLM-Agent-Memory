@@ -152,5 +152,6 @@ python experiments/atm_bench/run_hard31.py     # ~15 分钟，~186 API 调用
 ### 约束
 
 - 脚本未设置随机种子（运算确定：argsort + temperature=0.0）
-- 模型版本更新可能导致绝对数值偏移
+- 模型版本更新可能导致绝对数值偏移。
+  - **已知实例**：DeepSeek Flash 后续被升级为推理模型，输出需消耗 reasoning_tokens，原设 `max_tokens=16` 不足以生成裁判回答。已在 `lib/llm_adapter.py` 中调整为 256。
 - 本目录文件名对应论文 §6.3 和附录 C。S_T 在此为 Retrieval+KV 变体，非真状态投影。T_T 使用 oracle 轨迹访问（ground-truth 证据 ID + 时间排序），代表认知上限而非可部署系统精度。

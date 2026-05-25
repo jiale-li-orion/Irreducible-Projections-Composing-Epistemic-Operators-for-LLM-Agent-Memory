@@ -152,5 +152,6 @@ Both scripts support checkpoint resume.
 ### Constraints
 
 - No random seed is set (operations are deterministic: argsort + temperature=0.0)
-- Model version changes may shift absolute numbers
+- Model version changes may shift absolute numbers.
+  - **Known instance**: DeepSeek Flash was later upgraded to a reasoning model. Output requires reasoning_tokens; the original `max_tokens=16` for the judge was insufficient. Fixed to 256 in `lib/llm_adapter.py`.
 - Experiment files in this directory correspond to §6.3 and Appendix C. S_T on this benchmark is a Retrieval+KV variant rather than true state projection. T_T uses oracle trajectory access (ground-truth evidence IDs + chronological ordering), representing an epistemic upper bound rather than a deployable system accuracy.
