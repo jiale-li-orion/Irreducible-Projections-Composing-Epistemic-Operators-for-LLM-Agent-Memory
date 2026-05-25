@@ -6,7 +6,7 @@ External validation on [STALE](https://arxiv.org/abs/2605.06527): operator compo
 
 | Experiment | Paper section |
 |-----------|--------------|
-| `stale_optimal_run.py` | §6.2 External Generalization (Table 6) · Appendix F.1 |
+| `run_composition.py` | §6.2 External Generalization (Table 6) · Appendix F.1 |
 
 ---
 
@@ -34,7 +34,7 @@ External validation on [STALE](https://arxiv.org/abs/2605.06527): operator compo
 
 ## Script Analysis
 
-### stale_optimal_run.py
+### run_composition.py
 
 Core experiment, runs all 400 scenarios in one pass.
 
@@ -94,7 +94,7 @@ Dataset loads automatically from HuggingFace: `STALEproj/STALE`.
 ### Run
 
 ```bash
-python experiments/stale/stale_optimal_run.py
+python experiments/stale/run_composition.py
 ```
 
 ~22 minutes, ~1400 API calls. **No checkpoint resume** — restart from scratch if interrupted.
